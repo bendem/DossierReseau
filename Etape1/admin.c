@@ -5,17 +5,17 @@ char LocalReadChar()
  char Tampon[80] ;
  fgets(Tampon,sizeof Tampon,stdin ) ;
  return Tampon[0] ;
-} 
+}
 
 int main(void)
 {
- char c ;
+ char c;
  int res ;
  int Heure, HeureS,HeureP ;
  int PlacesLibres ;
  char Tampon[50] ;
  int NumTicket ;
- 
+
  while(1)
  {
  printf ("menu :\n") ;
@@ -39,9 +39,9 @@ int main(void)
 	     printf("Resultat %d \n",res) ;
 	     break ;
    case '6' :
-  
+
            exit(1) ;
-  }   
+  }
  }
- return(1) ;	
+ return(1) ;
 }
