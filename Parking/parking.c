@@ -116,8 +116,9 @@ int ReservationTicketBDEF(char *Nom, int IP,int Port,int NumTransac,int Heure, i
     UneTransaction.NumTransac = NumTransac;
     UneTransaction.Heure = Heure;
     UneTransaction.PlacesLibres = 0;
-    UneTransaction.UneAction = Action.RESERVATION;
+    UneTransaction.UneAction = RESERVATION;
     fseek(fp, 0, SEEK_END);
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
+    fclose(fp);
     return 1;
 }

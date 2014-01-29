@@ -1,13 +1,17 @@
 # cphex\makefile
 
-LIBS=
-all:	admin	parking.o
+LIBS=../tcplib/tcplib.o ../Parking/parking.o
+all:	admin
 
-parking.o:	../Parking/parking.c	../Parking/parking.h
+../Parking/parking.o:	../Parking/parking.c	../Parking/parking.h
 	echo "Compilation de parking.o"
-	cc -c ../Parking/parking.c
+	cc -c ../Parking/parking.c -o $@
 
-admin	:	admin.c	parking.o
+../tcplib/tcplib.o: ../tcplib/tcplib.c ../tcplib/tcplib.h
+	echo "Compilation de $@"
+	cc -c $< -o $@
+
+admin	:	admin.c	$(LIBS)
 	echo "Compilation de admin"
-	cc -o admin  admin.c parking.o 	$(LIBS)
+	cc -o admin  $^
 
