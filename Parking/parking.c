@@ -1,5 +1,4 @@
 #include "parking.h"
-#include <stdio.h>
 
 void LocalIpv4ToS(int ip,char *str)
 {
@@ -13,13 +12,13 @@ void LocalIpv4ToS(int ip,char *str)
       NM[2] = ( ip >> 8 ) & 255 ;
       NM[3] = ip & 255 ;
       sprintf(str,"%d.%d.%d.%d",NM[0],NM[1],NM[2],NM[3]) ;
-     }  
+     }
 }
 
 void MonPrintf(char* tempo, int espace,int taille )
 {
  int Count ;
- printf("%s",tempo) ; 
+ printf("%s",tempo) ;
  Count = espace-taille ;
  while ( Count>0 )
  {
@@ -28,12 +27,12 @@ void MonPrintf(char* tempo, int espace,int taille )
  }
 }
 
-int CreationFichierTransaction( char *Nom , int nombreplaces ) 
+int CreationFichierTransaction( char *Nom , int nombreplaces )
 {
  FILE *Fichier ;
  struct Transaction  UneTransaction ;
  int nbr ;
- 
+
  Fichier = fopen(Nom,"w+") ;
  if ( Fichier == NULL )
     {
@@ -47,10 +46,10 @@ int CreationFichierTransaction( char *Nom , int nombreplaces )
  nbr = ftell(Fichier) ;
  fprintf(stderr,"Position dans le fichier %d\n",nbr) ;
  if (nbr>0)
-    { 
+    {
      fprintf(stderr,"Fichier non vide \n") ;
      return(-1) ;
-    }	
+    }
  UneTransaction.IP=0  ;
  UneTransaction.Port=0 ;
  UneTransaction.NumTransac=0  ;
@@ -65,17 +64,17 @@ int CreationFichierTransaction( char *Nom , int nombreplaces )
 	 return(-1) ;
 	}
  fclose(Fichier) ;
- return(1) ;	
+ return(1) ;
 }
 
-int AffichageFichier(char *Nom) 
+int AffichageFichier(char *Nom)
 {
   FILE *Fichier ;
   int nbr ;
   struct Transaction  UneTransaction ;
   char tempo[80] ;
   char *PS ;
-  
+
   Fichier = fopen(Nom,"r") ;
   if ( Fichier == NULL )
     {
@@ -84,7 +83,7 @@ int AffichageFichier(char *Nom)
     }
  else
     fprintf(stderr,"Ouverture reussie \n") ;
- 
+
  PS ="IP"  ; MonPrintf(PS,20,strlen(PS)) ;
  PS="Port" ; MonPrintf(PS,7,strlen(PS)) ;
  PS="NumTr" ; MonPrintf(PS,7,strlen(PS)) ;
@@ -93,18 +92,18 @@ int AffichageFichier(char *Nom)
  PS="Ticket" ; MonPrintf(PS,7,strlen(PS)) ;
  printf("\tAction\n") ;
  nbr = fread(&UneTransaction, sizeof(struct Transaction),1,Fichier ) ;
- 
+
  while(!feof(Fichier))
  {
    char IPDD[40] ;
-   
+
    LocalIpv4ToS(UneTransaction.IP,IPDD ) ;  MonPrintf(IPDD,20,strlen(IPDD)) ;
    sprintf(tempo, "%d",UneTransaction.Port ) ; MonPrintf(tempo,7,strlen(tempo)) ;
    sprintf(tempo, "%d",UneTransaction.NumTransac ) ; MonPrintf(tempo,7,strlen(tempo)) ;
    sprintf(tempo, "%d",UneTransaction.Heure ) ;  MonPrintf(tempo,7,strlen(tempo)) ;
    sprintf(tempo,"%d",UneTransaction.PlacesLibres ) ;  MonPrintf(tempo,7,strlen(tempo)) ;
    sprintf(tempo,"%d",UneTransaction.NumTicket ) ; MonPrintf(tempo,7,strlen(tempo)) ;
-   printf("%d\n",UneTransaction.UneAction ) ; 
+   printf("%d\n",UneTransaction.UneAction ) ;
    nbr = fread(&UneTransaction, sizeof(struct Transaction),1,Fichier ) ;
  }
  fclose(Fichier) ;

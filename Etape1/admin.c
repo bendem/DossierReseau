@@ -1,14 +1,12 @@
 #include "../Parking/parking.h"
 
-char LocalReadChar()
-{
+char LocalReadChar() {
     char Tampon[80];
     fgets(Tampon, sizeof Tampon, stdin);
     return Tampon[0];
 }
 
-int main(void)
-{
+int main(void) {
     char c;
     int res;
     int Heure, HeureS, HeureP;
@@ -16,8 +14,7 @@ int main(void)
     char Tampon[50];
     int NumTicket;
 
-    while(1)
-    {
+    while(1) {
         printf ("menu :\n");
         printf("1) Creation du fichier  \n");
         printf("2) Affichage du fichier \n");
@@ -28,8 +25,7 @@ int main(void)
         printf("---------------------\n");
         c = LocalReadChar();   /* Readchar se trouve dans la librairie Physlib */
         printf("\n%c\n", c);
-        switch(c)
-        {
+        switch(c) {
             case '1' :
             res = CreationFichierTransaction("essai", 50);
             printf("Resultat %d \n", res);
