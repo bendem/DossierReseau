@@ -133,24 +133,24 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
     if(fp == NULL) {
         return -1;
     }
-    int ticketFound = -1;
+    int ticketFound = 0;
 
     // On passe l'entête...
-    fseek(fp, sizeof(Transaction), SEEK_SET);
+    fseek(fp, sizeof(struct Transaction), SEEK_SET);
     while (fread(&UneTransaction, sizeof(struct Transaction), 1, fp)) {
         if(UneTransaction.NumTicket == NumTicket) {
-            if(UneTransaction.Action == RESERVATION) {
-                ticketFound = ftell(fp);
+            if(UneTransaction.UneAction == RESERVATION) {
+                ticketFound =1;
             }
             // Si le ticket est déjà payé ou que la voiture est déjà sortie...
-            if(UneTransaction.Action == PAIEMENT || UneTransaction.Action == SORTIE) {
+            if(UneTransaction.UneAction == PAIEMENT || UneTransaction.UneAction == SORTIE) {
                 fclose(fp);
                 return -2;
             }
         }
     }
 
-    if(ticketFound == -1) {
+    if(!ticketFound) {
         return -3;
         fclose(fp);
     }
