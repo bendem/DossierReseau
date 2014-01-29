@@ -107,6 +107,7 @@ int ReservationTicketBDEF(char *Nom, int IP,int Port,int NumTransac,int Heure, i
         return -1;
     }
 
+    ++UneTransaction.NumTicket;
     --UneTransaction.PlacesLibres;
     fseek(fp, 0, SEEK_SET);
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
