@@ -8,13 +8,13 @@ char ReadChar() ;
 enum Action { ENTETE = 1 , RESERVATION = 2 ,PAIEMENT = 3 ,SORTIE = 4 } ;
 
 struct Transaction {
-int IP ;
-int Port ;
-int NumTransac ;
-int	Heure ;
-int PlacesLibres ;
-int NumTicket ;
-enum Action UneAction ;	
+    int IP ;
+    int Port ;
+    int NumTransac ;
+    int	Heure ;
+    int PlacesLibres ;
+    int NumTicket ;
+    enum Action UneAction ;
 };
 
 int CreationFichierTransaction( char *Nom , int nombreplaces ) ;
