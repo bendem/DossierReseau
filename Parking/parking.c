@@ -99,3 +99,25 @@ int AffichageFichier(char *Nom){
     fclose(Fichier);
 }
 
+int ReservationTicketBDEF(char *Nom, int IP,int Port,int NumTransac,int Heure, int *PlacesLibres) {
+    struct Transaction  UneTransaction;
+    FILE *fp = fopen(Nom, "r+");
+    fread(&UneTransaction, sizeof(struct Transaction), 1, fp);
+    if(UneTransaction.PlacesLibres == 0) {
+        return -1;
+    }
+
+    --UneTransaction.PlacesLibres;
+    fseek(fp, 0, SEEK_SET);
+    fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
+    *PlacesLibres = UneTransaction.PlacesLibres;
+    UneTransaction.IP = IP;
+    UneTransaction.Port = Port;
+    UneTransaction.NumTransac = NumTransac;
+    UneTransaction.Heure = Heure;
+    UneTransaction.PlacesLibres = 0;
+    UneTransaction.UneAction = Action.RESERVATION;
+    fseek(fp, 0, SEEK_END);
+    fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
+    return 1;
+}

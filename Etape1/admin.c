@@ -37,7 +37,7 @@ int main(void) {
                 break;
             case '3':
                 Ipv4ToInt("192.168.1.1", &ip);
-                ReservationTicket("essai", ip, 3, 16, &PlacesLibres);
+                ReservationTicketBDEF("essai", ip, 3, 16, &PlacesLibres);
                 break;
             case '4':
                 break;
