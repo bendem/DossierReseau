@@ -102,6 +102,9 @@ int AffichageFichier(char *Nom){
 int ReservationTicketBDEF(char *Nom, int IP,int Port,int NumTransac,int Heure, int *PlacesLibres) {
     struct Transaction  UneTransaction;
     FILE *fp = fopen(Nom, "r+");
+    if(fp == NULL) {
+        return -1;
+    }
     fread(&UneTransaction, sizeof(struct Transaction), 1, fp);
     if(UneTransaction.PlacesLibres == 0) {
         return -1;
@@ -121,5 +124,47 @@ int ReservationTicketBDEF(char *Nom, int IP,int Port,int NumTransac,int Heure, i
     fseek(fp, 0, SEEK_END);
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
     fclose(fp);
-    return 1;
+    return 0;
+}
+
+int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
+    struct Transaction  UneTransaction;
+    FILE *fp = fopen(Nom, "r+");
+    if(fp == NULL) {
+        return -1;
+    }
+    int ticketFound = -1;
+
+    // On passe l'entête...
+    fseek(fp, sizeof(Transaction), SEEK_SET);
+    while (fread(&UneTransaction, sizeof(struct Transaction), 1, fp)) {
+        if(UneTransaction.NumTicket == NumTicket) {
+            if(UneTransaction.Action == RESERVATION) {
+                ticketFound = ftell(fp);
+            }
+            // Si le ticket est déjà payé ou que la voiture est déjà sortie...
+            if(UneTransaction.Action == PAIEMENT || UneTransaction.Action == SORTIE) {
+                fclose(fp);
+                return -2;
+            }
+        }
+    }
+
+    if(ticketFound == -1) {
+        return -3;
+        fclose(fp);
+    }
+
+    // Paiement
+    UneTransaction.IP = IP;
+    UneTransaction.Port = Port;
+    UneTransaction.NumTransac = NumTransac;
+    UneTransaction.Heure = Heure;
+    UneTransaction.PlacesLibres = 0;
+    UneTransaction.UneAction = PAIEMENT;
+    fseek(fp, 0, SEEK_END);
+    fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
+    fclose(fp);
+
+    return 0;
 }

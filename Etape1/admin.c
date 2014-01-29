@@ -37,9 +37,13 @@ int main(void) {
                 break;
             case '3':
                 Ipv4ToInt("192.168.1.1", &ip);
-                ReservationTicketBDEF("essai", ip, 80, 3, 16, &PlacesLibres);
+                res = ReservationTicketBDEF("essai", ip, 80, 3, 16, &PlacesLibres);
+                printf("Resultat %d \n", res);
                 break;
             case '4':
+                Ipv4ToInt("192.168.1.2", &ip);
+                res = PaiementTicketBDEF("essai", ip, 80, 3, 1812, 2);
+                printf("Resultat %d \n", res);
                 break;
             case '5':
                 break;
