@@ -36,7 +36,7 @@ int CreationFichierTransaction( char *Nom , int nombreplaces ){
     else{
         fprintf(stderr, "Ouverture reussie \n");
     }
-    nbr = fseek(Fichier, 0, SEEK_END);
+    fseek(Fichier, 0, SEEK_END);
     /* fseek ne retourne pas la nouvelle position mais ftell */
     nbr = ftell(Fichier);
     fprintf(stderr, "Position dans le fichier %d\n", nbr);

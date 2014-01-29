@@ -9,6 +9,7 @@ char LocalReadChar() {
 int main(void) {
     char c;
     int res;
+    int ip;
     int Heure, HeureS, HeureP;
     int PlacesLibres;
     char Tampon[50];
@@ -27,16 +28,24 @@ int main(void) {
         printf("\n%c\n", c);
         switch(c) {
             case '1' :
-            res = CreationFichierTransaction("essai", 50);
-            printf("Resultat %d \n", res);
-            break;
+                res = CreationFichierTransaction("essai", 50);
+                printf("Resultat %d \n", res);
+                break;
             case '2' :
-            res = AffichageFichier("essai");
-            printf("Resultat %d \n", res);
-            break;
+                res = AffichageFichier("essai");
+                printf("Resultat %d \n", res);
+                break;
+            case '3':
+                Ipv4ToInt("192.168.1.1", &ip);
+                ReservationTicket("essai", ip, 3, 16, &PlacesLibres);
+                break;
+            case '4':
+                break;
+            case '5':
+                break;
             case '6' :
-            exit(1);
+                exit(0);
         }
     }
-    return(1);
+    return 0;
 }
