@@ -140,7 +140,7 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
     while (fread(&UneTransaction, sizeof(struct Transaction), 1, fp)) {
         if(UneTransaction.NumTicket == NumTicket) {
             if(UneTransaction.UneAction == RESERVATION) {
-                ticketFound =1;
+                ticketFound = 1;
             }
             // Si le ticket est déjà payé ou que la voiture est déjà sortie...
             if(UneTransaction.UneAction == PAIEMENT || UneTransaction.UneAction == SORTIE) {
@@ -151,8 +151,8 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
     }
 
     if(!ticketFound) {
-        return -3;
         fclose(fp);
+        return -3;
     }
 
     // Paiement
@@ -162,6 +162,7 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
     UneTransaction.Heure = Heure;
     UneTransaction.PlacesLibres = 0;
     UneTransaction.UneAction = PAIEMENT;
+    UneTransaction.NumTicket = NumTicket;
     fseek(fp, 0, SEEK_END);
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
     fclose(fp);
