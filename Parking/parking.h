@@ -18,9 +18,9 @@ struct Transaction {
 };
 
 int CreationFichierTransaction( char *Nom, int nombreplaces);
-int ReservationTicketBDEF(char *Nom, int IP,int Port,int NumTransac,int Heure, int *PlacesLibres);
+int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int *PlacesLibres);
 int AffichageFichier(char *Nom);
-int RechercheHeureTicket(char *Nom,enum Action UneAction, int NumTicket);
-int PaiementTicketBDEF(char *Nom, int IP,int Port,int NumTransac,int Heure,int NumTicket);
-int SortieParking(char *Nom, int IP,int Port,int NumTransac,int Heure,int NumTicket);
-int RechercheTicketTransaction(char *Nom,int IP,int Port,int NumTransac,enum Action UneAction);
+int RechercheHeureTicket(char *Nom, enum Action UneAction, int NumTicket);
+int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket);
+int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket);
+int RechercheTicketTransaction(char *Nom, int IP, int Port, int NumTransac,enum Action UneAction);
