@@ -1,5 +1,3 @@
-# cphex\makefile
-
 LIBS=../tcplib/tcplib.o ../Parking/parking.o
 all:	admin
 
