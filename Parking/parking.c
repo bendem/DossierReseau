@@ -211,7 +211,7 @@ int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, in
 
     // Libération d'une place...
     fseek(fp, 0, SEEK_SET);
-    fread(&UneTransaction, sizeof(struct Transaction), 1, fp)
+    fread(&UneTransaction, sizeof(struct Transaction), 1, fp);
     fseek(fp, 0, SEEK_SET);
     ++UneTransaction.PlacesLibres;
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);

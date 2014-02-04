@@ -46,6 +46,9 @@ int main(void) {
                 printf("Resultat %d \n", res);
                 break;
             case '5':
+                Ipv4ToInt("192.168.2.2", &ip);
+                res = SortieParkingBDEF("essai", ip, 80, 3, 1812, 2);
+                printf("Resultat %d \n", res);
                 break;
             case '6' :
                 exit(0);
