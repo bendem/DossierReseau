@@ -9,7 +9,7 @@ physlib.o:	../physlib/physlib.h	../physlib/physlib.c
 
 tcplib.o:	../tcplib/tcplib.h	../tcplib/tcplib.c
 	echo "Compilation de tcplib.o"
-	cc -c ../tcplib/tcplib.c	
+	cc -c ../tcplib/tcplib.c
 
 cli:	cli.c	physlib.o	tcplib.o
 	echo "Compilation de client"
