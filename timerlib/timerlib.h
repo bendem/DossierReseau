@@ -11,17 +11,17 @@
 #include <unistd.h>
 #include <sys/times.h>
 
-struct ListeTimer 
+struct ListeTimer
 {
- int num    ;
- long clktck ;
- struct ListeTimer *psuiv ;
+ int num   ;
+ long clktck;
+ struct ListeTimer *psuiv;
 };
 
-int microtoclktck( int micro ) ;
-int millitoclktck( int milli ) ;
-struct ListeTimer * StartTimer( int num, int to, struct ListeTimer *pl) ;
-struct ListeTimer *TestTimer(int *num , struct ListeTimer *pl) ;
-struct ListeTimer *StopTimer(int num , struct ListeTimer *pl ) ;
-void   AfficheTimer(struct ListeTimer *pl) ;
-#endif 
+int microtoclktck(int micro);
+int millitoclktck(int milli);
+struct ListeTimer * StartTimer(int num, int to, struct ListeTimer *pl);
+struct ListeTimer *TestTimer(int *num, struct ListeTimer *pl);
+struct ListeTimer *StopTimer(int num, struct ListeTimer *pl);
+void   AfficheTimer(struct ListeTimer *pl);
+#endif

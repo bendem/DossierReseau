@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     Desc = CreateSockets(&psoo, &psos, argv[1], atoi(argv[2]), argv[3], atoi(argv[4]));
-    if ( Desc == -1 ) {
+    if (Desc == -1) {
         perror("CreateSockets:");
     } else {
         fprintf(stderr, "CreateSockets %d\n", Desc);
@@ -46,27 +46,27 @@ int main(int argc, char *argv[]) {
     if (rc == -1) {
         perror("SendDatagram error");
     } else {
-        fprintf(stderr, "Envoi de %d bytes\n", rc );
+        fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
     memset(&UneRequete, 0, sizeof(struct Requete));
     tm = sizeof(struct Requete);
 
-    rc = ReceiveDatagram( Desc, &UneRequete, tm, &psor );
+    rc = ReceiveDatagram(Desc, &UneRequete, tm, &psor);
     if (rc == -1) {
         perror("ReceiveDatagram");
     } else {
-        fprintf(stderr, "bytes:%d:%s\n", rc, UneRequete.Message );
+        fprintf(stderr, "bytes:%d:%s\n", rc, UneRequete.Message);
     }
 
     memset(&UneRequete, 0, sizeof(struct Requete));
     tm = sizeof(struct Requete);
 
-    rc = ReceiveDatagram( Desc, &UneRequete, tm, &psor );
+    rc = ReceiveDatagram(Desc, &UneRequete, tm, &psor);
     if (rc == -1) {
         perror("ReceiveDatagram");
     } else {
-        fprintf(stderr, "bytes:%d:%s\n", rc, UneRequete.Message );
+        fprintf(stderr, "bytes:%d:%s\n", rc, UneRequete.Message);
     }
 
     close(Desc);

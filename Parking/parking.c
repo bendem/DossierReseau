@@ -5,31 +5,31 @@ void LocalIpv4ToS(int ip, char *str){
     if (ip==0)
         strcpy(str, "0.0.0.0");
     else{
-        NM[0] = ( ip >> 24 ) & 255;
-        NM[1] = ( ip >> 16 ) & 255;
-        NM[2] = ( ip >> 8 ) & 255;
+        NM[0] = (ip >> 24) & 255;
+        NM[1] = (ip >> 16) & 255;
+        NM[2] = (ip >> 8) & 255;
         NM[3] = ip & 255;
         sprintf(str, "%d.%d.%d.%d", NM[0], NM[1], NM[2], NM[3]);
     }
 }
 
-void MonPrintf(char* tempo, int espace, int taille ){
+void MonPrintf(char* tempo, int espace, int taille){
     int Count;
     printf("%s", tempo);
     Count = espace-taille;
-    while ( Count>0 ){
+    while (Count>0){
         printf(" ");
         Count--;
     }
 }
 
-int CreationFichierTransaction( char *Nom , int nombreplaces ){
+int CreationFichierTransaction(char *Nom, int nombreplaces){
     FILE *Fichier;
     struct Transaction  UneTransaction;
     int nbr;
 
     Fichier = fopen(Nom, "w+");
-    if ( Fichier == NULL ){
+    if (Fichier == NULL){
         fprintf(stderr, "Echec Ouverture\n");
         return(-1);
     }
@@ -44,9 +44,9 @@ int CreationFichierTransaction( char *Nom , int nombreplaces ){
         fprintf(stderr, "Fichier non vide \n");
         return(-1);
     }
-    UneTransaction.IP=0 ;
+    UneTransaction.IP=0;
     UneTransaction.Port=0;
-    UneTransaction.NumTransac=0 ;
+    UneTransaction.NumTransac=0;
     UneTransaction.Heure=0;
     UneTransaction.PlacesLibres = nombreplaces;
     UneTransaction.NumTicket=0;
@@ -68,38 +68,38 @@ int AffichageFichier(char *Nom){
     char *PS;
 
     Fichier = fopen(Nom, "r");
-    if ( Fichier == NULL ){
+    if (Fichier == NULL){
         fprintf(stderr, "Echec Ouverture\n");
         return(-1);
     }
     else
         fprintf(stderr, "Ouverture reussie \n");
 
-    PS ="IP" ; MonPrintf(PS, 20, strlen(PS));
+    PS ="IP"; MonPrintf(PS, 20, strlen(PS));
     PS="Port"; MonPrintf(PS, 7, strlen(PS));
     PS="NumTr"; MonPrintf(PS, 7, strlen(PS));
     PS="Heure"; MonPrintf(PS, 7, strlen(PS));
     PS="Places"; MonPrintf(PS, 7, strlen(PS));
     PS="Ticket"; MonPrintf(PS, 7, strlen(PS));
     printf("\tAction\n");
-    nbr = fread(&UneTransaction, sizeof(struct Transaction), 1, Fichier );
+    nbr = fread(&UneTransaction, sizeof(struct Transaction), 1, Fichier);
 
     while(!feof(Fichier)){
         char IPDD[40];
 
-        LocalIpv4ToS(UneTransaction.IP, IPDD );  MonPrintf(IPDD, 20, strlen(IPDD));
-        sprintf(tempo, "%d", UneTransaction.Port ); MonPrintf(tempo, 7, strlen(tempo));
-        sprintf(tempo, "%d", UneTransaction.NumTransac ); MonPrintf(tempo, 7, strlen(tempo));
-        sprintf(tempo, "%d", UneTransaction.Heure );  MonPrintf(tempo, 7, strlen(tempo));
-        sprintf(tempo, "%d", UneTransaction.PlacesLibres );  MonPrintf(tempo, 7, strlen(tempo));
-        sprintf(tempo, "%d", UneTransaction.NumTicket ); MonPrintf(tempo, 7, strlen(tempo));
-        printf("%d\n", UneTransaction.UneAction );
-        nbr = fread(&UneTransaction, sizeof(struct Transaction), 1, Fichier );
+        LocalIpv4ToS(UneTransaction.IP, IPDD);  MonPrintf(IPDD, 20, strlen(IPDD));
+        sprintf(tempo, "%d", UneTransaction.Port); MonPrintf(tempo, 7, strlen(tempo));
+        sprintf(tempo, "%d", UneTransaction.NumTransac); MonPrintf(tempo, 7, strlen(tempo));
+        sprintf(tempo, "%d", UneTransaction.Heure);  MonPrintf(tempo, 7, strlen(tempo));
+        sprintf(tempo, "%d", UneTransaction.PlacesLibres);  MonPrintf(tempo, 7, strlen(tempo));
+        sprintf(tempo, "%d", UneTransaction.NumTicket); MonPrintf(tempo, 7, strlen(tempo));
+        printf("%d\n", UneTransaction.UneAction);
+        nbr = fread(&UneTransaction, sizeof(struct Transaction), 1, Fichier);
     }
     fclose(Fichier);
 }
 
-int ReservationTicketBDEF(char *Nom, int IP,int Port,int NumTransac,int Heure, int *PlacesLibres) {
+int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int *PlacesLibres) {
     struct Transaction  UneTransaction;
     FILE *fp = fopen(Nom, "r+");
     if(fp == NULL) {

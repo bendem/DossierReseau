@@ -23,17 +23,17 @@
 #define ACCEPT 2
 
 struct Regle {
-      int LigneEntree ;
-      int IPSource ;
-      int MasqueS ;
-      int IPDestination ;
-      int MasqueD ;
-      int PortSource ;
-      int PortDestination ;
-      int Protocole ;
-      int Politique ;
-};	
+      int LigneEntree;
+      int IPSource;
+      int MasqueS;
+      int IPDestination;
+      int MasqueD;
+      int PortSource;
+      int PortDestination;
+      int Protocole;
+      int Politique;
+};
 
-int FiltragePaquet(int LigneEntree,struct Regle TableFiltrage[],int NbrRegles, struct Paquet* PP,int *R);
-void LectureTableFiltrage(char *NomFichier,struct Regle TableFiltrage[],int *NbrRegles,int NbrLignes) ;
-void AffichageTableFiltrage(struct Regle TableFiltrage[],int NbrRegles) ;
+int FiltragePaquet(int LigneEntree, struct Regle TableFiltrage[], int NbrRegles, struct Paquet* PP, int *R);
+void LectureTableFiltrage(char *NomFichier, struct Regle TableFiltrage[], int *NbrRegles, int NbrLignes);
+void AffichageTableFiltrage(struct Regle TableFiltrage[], int NbrRegles);

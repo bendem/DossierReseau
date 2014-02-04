@@ -13,14 +13,14 @@ then
   do
     set `file $j`
     case $2 in
-      
+
        COFF|ELF|Elf)
         echo 	"suppression" $j
-        rm $j 
-        ;;
+        rm $j
+       ;;
     esac
   done
-  cd .. 
+  cd ..
 fi
 done
 
