@@ -6,8 +6,16 @@ char LocalReadChar() {
     return Tampon[0];
 }
 
+int ctoi(char d) {
+    char str[2];
+
+    str[0] = d;
+    str[1] = '\0';
+    return (int) strtol(str, NULL, 10);
+}
+
 int main(void) {
-    char c;
+    char c, b;
     int res;
     int ip;
     int Heure, HeureS, HeureP;
@@ -41,13 +49,17 @@ int main(void) {
                 printf("Resultat %d \n", res);
                 break;
             case '4':
+                printf("Num Ticket : ");
+                b = LocalReadChar();
                 Ipv4ToInt("192.168.1.2", &ip);
-                res = PaiementTicketBDEF("essai", ip, 80, 3, 1812, 2);
+                res = PaiementTicketBDEF("essai", ip, 80, 3, 1812, ctoi(b));
                 printf("Resultat %d \n", res);
                 break;
             case '5':
+                printf("Num Ticket : ");
+                b = LocalReadChar();
                 Ipv4ToInt("192.168.2.2", &ip);
-                res = SortieParkingBDEF("essai", ip, 80, 3, 1812, 2);
+                res = SortieParkingBDEF("essai", ip, 80, 3, 1812, ctoi(b));
                 printf("Resultat %d \n", res);
                 break;
             case '6' :
