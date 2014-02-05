@@ -8,8 +8,8 @@ le serveur fait de même
 #include <stdio.h>
 #include <string.h>
 #include "../physlib/physlib.h"
+#include "../Parking/parking.h"
 #include "structure.h"
-#include "../parking/Parking.h"
 
 int main(int argc, char *argv[]) {
     int rc;
