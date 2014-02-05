@@ -129,32 +129,19 @@ int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure
 
 int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
     struct Transaction  UneTransaction;
-    FILE *fp = fopen(Nom, "r+");
+    long offset = RechercheOffsetTicket(NumTicket, RESERVATION, Nom);
+    FILE *fp;
+
+    // En cas d'erreur lors de la recherche
+    if(offset < 1) {
+        return offset ? offset : -1;
+    }
+
+    // Si tout est trop cool
+    fp = fopen(Nom, "r+");
     if(fp == NULL) {
         return -1;
     }
-    int ticketFound = 0;
-
-    // On passe l'entête...
-    fseek(fp, sizeof(struct Transaction), SEEK_SET);
-    while (fread(&UneTransaction, sizeof(struct Transaction), 1, fp)) {
-        if(UneTransaction.NumTicket == NumTicket) {
-            if(UneTransaction.UneAction == RESERVATION) {
-                ticketFound = 1;
-            }
-            // Si le ticket est déjà payé ou que la voiture est déjà sortie...
-            if(UneTransaction.UneAction == PAIEMENT || UneTransaction.UneAction == SORTIE) {
-                fclose(fp);
-                return -2;
-            }
-        }
-    }
-
-    if(!ticketFound) {
-        fclose(fp);
-        return -3;
-    }
-
     // Paiement
     UneTransaction.IP = IP;
     UneTransaction.Port = Port;
@@ -172,33 +159,19 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
 
 int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
     struct Transaction  UneTransaction;
-    FILE *fp = fopen(Nom, "r+");
+    FILE *fp;
+    long offset = RechercheOffsetTicket(NumTicket, PAIEMENT, Nom);
+
+    if(offset < 1) {
+        return offset ? offset : -1;
+    }
+
     if(fp == NULL) {
         return -1;
     }
-    int ticketFound = 0;
+    fp = fopen(Nom, "r+");
 
-    // On passe l'entête...
-    fseek(fp, sizeof(struct Transaction), SEEK_SET);
-    while (fread(&UneTransaction, sizeof(struct Transaction), 1, fp)) {
-        if(UneTransaction.NumTicket == NumTicket) {
-            if(UneTransaction.UneAction == PAIEMENT) {
-                ticketFound = 1;
-            }
-            // Si le ticket est déjà payé ou que la voiture est déjà sortie...
-            if(UneTransaction.UneAction == SORTIE) {
-                fclose(fp);
-                return -2;
-            }
-        }
-    }
-
-    if(!ticketFound) {
-        fclose(fp);
-        return -3;
-    }
-
-    // Paiement
+    // Sortie
     UneTransaction.IP = IP;
     UneTransaction.Port = Port;
     UneTransaction.NumTransac = NumTransac;
@@ -209,7 +182,7 @@ int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, in
     fseek(fp, 0, SEEK_END);
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
 
-    // Libération d'une place...
+    // Libération d'une place (mise à jour de l'entête)...
     fseek(fp, 0, SEEK_SET);
     fread(&UneTransaction, sizeof(struct Transaction), 1, fp);
     fseek(fp, 0, SEEK_SET);
@@ -218,4 +191,33 @@ int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, in
     fclose(fp);
 
     return 0;
+}
+
+long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
+    struct Transaction  UneTransaction;
+    FILE *fp = fopen(Nom, "r+");
+    long ticketFound = 0;
+    if(fp == NULL) {
+        return -1;
+    }
+
+    // On passe l'entête...
+    fseek(fp, sizeof(struct Transaction), SEEK_SET);
+    while (fread(&UneTransaction, sizeof(struct Transaction), 1, fp)) {
+        printf("\t[DEBUG 1] %ld\n", ticketFound);
+        if(UneTransaction.NumTicket == NumTicket) {
+            if(UneTransaction.UneAction == Type) {
+                ticketFound = ftell(fp);
+            }
+            // Si le ticket est déjà payé ou que la voiture est déjà sortie...
+            if(UneTransaction.UneAction > Type) {
+                fclose(fp);
+                return -2;
+            }
+        }
+        printf("\t[DEBUG 2] %ld\n", ticketFound);
+    }
+
+    fclose(fp);
+    return ticketFound;
 }

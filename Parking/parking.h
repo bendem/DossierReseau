@@ -24,3 +24,4 @@ int RechercheHeureTicket(char *Nom, enum Action UneAction, int NumTicket);
 int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket);
 int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket);
 int RechercheTicketTransaction(char *Nom, int IP, int Port, int NumTransac, enum Action UneAction);
+long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom);
