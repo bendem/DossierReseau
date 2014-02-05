@@ -168,11 +168,11 @@ int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, in
         return offset ? offset : -1;
     }
 
+    fp = fopen(Nom, "r+");
     if(fp == NULL) {
         perror("Erreur d'ouverture de fichier");
         return -1;
     }
-    fp = fopen(Nom, "r+");
 
     // Sortie
     UneTransaction.IP = IP;
