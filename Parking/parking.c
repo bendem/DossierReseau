@@ -103,6 +103,7 @@ int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure
     struct Transaction  UneTransaction;
     FILE *fp = fopen(Nom, "r+");
     if(fp == NULL) {
+        perror("Erreur d'ouverture de fichier");
         return -1;
     }
     fread(&UneTransaction, sizeof(struct Transaction), 1, fp);
@@ -140,6 +141,7 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
     // Si tout est trop cool
     fp = fopen(Nom, "r+");
     if(fp == NULL) {
+        perror("Erreur d'ouverture de fichier");
         return -1;
     }
     // Paiement
@@ -167,6 +169,7 @@ int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, in
     }
 
     if(fp == NULL) {
+        perror("Erreur d'ouverture de fichier");
         return -1;
     }
     fp = fopen(Nom, "r+");
@@ -198,13 +201,13 @@ long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
     FILE *fp = fopen(Nom, "r+");
     long ticketFound = 0;
     if(fp == NULL) {
+        perror("Erreur d'ouverture de fichier");
         return -1;
     }
 
     // On passe l'entête...
     fseek(fp, sizeof(struct Transaction), SEEK_SET);
     while (fread(&UneTransaction, sizeof(struct Transaction), 1, fp)) {
-        printf("\t[DEBUG 1] %ld\n", ticketFound);
         if(UneTransaction.NumTicket == NumTicket) {
             if(UneTransaction.UneAction == Type) {
                 ticketFound = ftell(fp);
