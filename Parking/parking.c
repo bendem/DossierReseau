@@ -218,7 +218,6 @@ long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
                 return -2;
             }
         }
-        printf("\t[DEBUG 2] %ld\n", ticketFound);
     }
 
     fclose(fp);
