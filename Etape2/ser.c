@@ -18,8 +18,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in psos; /* s = serveur */
     struct sockaddr_in psor; /* r = remote */
 
-    int tm;
-    struct Requete UneRequete;
+    struct RequeteBDEF notreRequetePerso;
 
     memset(&psoo, 0, sizeof(struct sockaddr_in));
     memset(&psos, 0, sizeof(struct sockaddr_in));
@@ -39,19 +38,18 @@ int main(int argc, char *argv[]) {
         printf(" CreateSockets : %d \n", Desc);
     }
 
-    tm = sizeof(struct Requete);
-    rc = ReceiveDatagram(Desc, &UneRequete, tm, &psor);
+    rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
     if (rc == -1) {
         perror("ReceiveDatagram");
     } else {
-        fprintf(stderr, "bytes:%d:%s\n", rc, UneRequete.Message);
+        fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
     }
 
     /* reponse avec psos */
 
-    UneRequete.Type = Reponse;
-    strcat(UneRequete.Message, " Client");
-    rc = SendDatagram(Desc, &UneRequete, sizeof(struct Requete), &psos);
+    notreRequetePerso.Type = Reponse;
+    notreRequetePerso.NumeroTicket = 2;
+    rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psos);
     if (rc == -1) {
         perror("SendDatagram:");
     } else {
@@ -60,13 +58,13 @@ int main(int argc, char *argv[]) {
 
     /* reponse avex psor r = remote */
 
-    strcat(UneRequete.Message, "X2");
-    rc = SendDatagram(Desc, &UneRequete, sizeof(struct Requete), &psor);
-    if (rc == -1) {
-        perror("SendDatagram:");
-    } else {
-        fprintf(stderr, "bytes:%d\n", rc);
-    }
+    // strcat(notreRequetePerso.Message, "X2");
+    // rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+    // if (rc == -1) {
+    //     perror("SendDatagram:");
+    // } else {
+    //     fprintf(stderr, "bytes:%d\n", rc);
+    // }
 
     return 0;
 }
