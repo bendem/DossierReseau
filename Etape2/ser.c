@@ -47,7 +47,6 @@ int main(int argc, char *argv[]) {
     }
 
     /* reponse avec psos */
-
     notreRequetePerso.Type = Reponse;
     notreRequetePerso.NumeroTicket = 2;
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psos);

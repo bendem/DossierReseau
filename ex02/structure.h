@@ -6,5 +6,6 @@ enum TypeRequete {
 struct RequeteBDEF {
     TypeRequete Type;
     int NumeroTicket;
+    int NumTransac;
     Action Action;
 };
