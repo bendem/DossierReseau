@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 void DelNewLine(char *Chaine);
 char ReadChar();
@@ -25,3 +26,4 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
 int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket);
 int RechercheTicketTransaction(char *Nom, int IP, int Port, int NumTransac, enum Action UneAction);
 long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom);
+int GetTimeBDEF();

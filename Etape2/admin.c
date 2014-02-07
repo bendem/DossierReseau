@@ -1,5 +1,5 @@
 #include "../Parking/parking.h"
-#define NOMDEFICHIER "transaction"
+#define NOMDEFICHIER "transaction.dat"
 
 char LocalReadChar() {
     char Tampon[80];

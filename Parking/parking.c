@@ -223,3 +223,15 @@ long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
     fclose(fp);
     return ticketFound;
 }
+
+int GetTimeBDEF(){
+	time_t timer;
+	struct tm timeTM;
+	int heure;
+
+	time(&timer);
+	timeTM=localtime(&timer);
+	heure = (timeTM.tm_hour*100+timeTM.tm_min);
+
+	return heure;
+}

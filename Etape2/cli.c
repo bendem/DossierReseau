@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
 	notreRequetePerso.Type = Question;
     notreRequetePerso.Action = RESERVATION;
     notreRequetePerso.NumTransac = 0;
+    notreRequetePerso.Heure= GetTimeBDEF();
 
 
 	rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
