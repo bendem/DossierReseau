@@ -19,7 +19,6 @@ int processDatagramBDEF(struct RequeteBDEF, struct sockaddr_in);
 
 
 int main(int argc, char *argv[]) {
-    int i;
     int rc;
     int Desc;
     struct sockaddr_in psoo; /* o = origine */
@@ -45,7 +44,7 @@ int main(int argc, char *argv[]) {
         printf(" CreateSockets : %d \n", Desc);
     }
 
-    for (i = 0; i < 2; ++i) {
+    for (;;) {
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("ReceiveDatagram");
