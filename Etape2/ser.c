@@ -14,6 +14,9 @@ Un serveur recevant une structure et lié à un client particulier
 
 #define NOMDEFICHIER "transaction.dat"
 
+int processDatagramBDEF(struct RequeteBDEF, struct sockaddr_in);
+
+
 int main(int argc, char *argv[]) {
     int rc;
     int Desc;
@@ -84,7 +87,7 @@ int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
                     psor.sin_port,
                     data.NumTransac,
                     data.Heure,
-                    &PlacesLibres
+                    NULL
                 );
             case PAIEMENT:
                 return PaiementTicketBDEF(
@@ -104,5 +107,6 @@ int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
                     data.Heure,
                     data.NumeroTicket
                 );
+        }
     }
 }

@@ -115,7 +115,9 @@ int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure
     --UneTransaction.PlacesLibres;
     fseek(fp, 0, SEEK_SET);
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
-    *PlacesLibres = UneTransaction.PlacesLibres;
+    if(PlacesLibres) {
+        *PlacesLibres = UneTransaction.PlacesLibres;
+    }
     UneTransaction.IP = IP;
     UneTransaction.Port = Port;
     UneTransaction.NumTransac = NumTransac;
@@ -224,14 +226,14 @@ long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
     return ticketFound;
 }
 
-int GetTimeBDEF(){
+int GetTimeBDEF() {
 	time_t timer;
-	struct tm timeTM;
+	struct tm *timeTM;
 	int heure;
 
 	time(&timer);
-	timeTM=localtime(&timer);
-	heure = (timeTM.tm_hour*100+timeTM.tm_min);
+	timeTM = localtime(&timer);
+	heure = (timeTM->tm_hour * 100 + timeTM->tm_min);
 
 	return heure;
 }
