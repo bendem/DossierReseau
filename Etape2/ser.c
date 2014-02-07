@@ -50,11 +50,10 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
     }
 
-    processDatagramBDEF(notreRequetePerso, psor);
+    notreRequetePerso.NumeroTicket = processDatagramBDEF(notreRequetePerso, psor);
+    notreRequetePerso.Type = Reponse;
 
     /* reponse avec psoc */
-    notreRequetePerso.Type = Reponse;
-    notreRequetePerso.NumeroTicket = 2;
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
     if (rc == -1) {
         perror("SendDatagram:");

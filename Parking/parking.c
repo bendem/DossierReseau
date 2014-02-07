@@ -127,7 +127,7 @@ int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure
     fseek(fp, 0, SEEK_END);
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
     fclose(fp);
-    return 0;
+    return UneTransaction.NumTicket;
 }
 
 int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
