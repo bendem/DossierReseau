@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
 
     notreRequetePerso.Type = Question;
     notreRequetePerso.Action = RESERVATION;
+    notreRequetePerso.NumTransac = 0;
 
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psos);
 
@@ -56,6 +57,28 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
     }
 
+	notreRequetePerso.Type = Question;
+    notreRequetePerso.Action = RESERVATION;
+    notreRequetePerso.NumTransac = 0;
+
+
+	rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psos);
+
+    if (rc == -1) {
+        perror("SendDatagram error");
+    } else {
+        fprintf(stderr, "Envoi de %d bytes\n", rc);
+    }
+
+    // memset(&notreRequetePerso, 0, sizeof(struct RequeteBDEF));
+    // tm = sizeof(struct RequeteBDEF);
+
+    rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+    if (rc == -1) {
+        perror("ReceiveDatagram");
+    } else {
+        fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
+    }
     // memset(&notreRequetePerso, 0, sizeof(struct RequeteBDEF));
     // tm = sizeof(struct RequeteBDEF);
 

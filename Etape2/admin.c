@@ -1,4 +1,5 @@
 #include "../Parking/parking.h"
+#define NOMDEFICHIER "transaction"
 
 char LocalReadChar() {
     char Tampon[80];
@@ -36,30 +37,30 @@ int main(void) {
         printf("\n%c\n", c);
         switch(c) {
             case '1' :
-                res = CreationFichierTransaction("essai", 50);
+                res = CreationFichierTransaction(NOMDEFICHIER, 50);
                 printf("Resultat %d \n", res);
                 break;
             case '2' :
-                res = AffichageFichier("essai");
+                res = AffichageFichier(NOMDEFICHIER);
                 printf("Resultat %d \n", res);
                 break;
             case '3':
                 Ipv4ToInt("192.168.1.1", &ip);
-                res = ReservationTicketBDEF("essai", ip, 80, 3, 16, &PlacesLibres);
+                res = ReservationTicketBDEF(NOMDEFICHIER, ip, 80, 3, 16, &PlacesLibres);
                 printf("Resultat %d \n", res);
                 break;
             case '4':
                 printf("Num Ticket : ");
                 b = LocalReadChar();
                 Ipv4ToInt("192.168.1.2", &ip);
-                res = PaiementTicketBDEF("essai", ip, 80, 3, 1812, ctoi(b));
+                res = PaiementTicketBDEF(NOMDEFICHIER, ip, 80, 3, 1812, ctoi(b));
                 printf("Resultat %d \n", res);
                 break;
             case '5':
                 printf("Num Ticket : ");
                 b = LocalReadChar();
                 Ipv4ToInt("192.168.2.2", &ip);
-                res = SortieParkingBDEF("essai", ip, 80, 3, 1812, ctoi(b));
+                res = SortieParkingBDEF(NOMDEFICHIER, ip, 80, 3, 1812, ctoi(b));
                 printf("Resultat %d \n", res);
                 break;
             case '6' :
