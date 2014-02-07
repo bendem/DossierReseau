@@ -15,17 +15,17 @@ int RequeteReservation(char*);
 char LocalReadChar();
 
 int Desc;
-int NumTransac=0;
+int NumTransac = 0;
 struct sockaddr_in psoo; /* o = origine */
 struct sockaddr_in psoc; /* s = cible */
 struct sockaddr_in psor; /* r = remote */
 
 int main(int argc, char *argv[]) {
     int res;
-    char NomFichier[15];
+    char NomFichier[20];
     char c;
 
-    sprintf(NomFichier,"%s%d","LogClient-",atoi(argv[2]));
+    sprintf(NomFichier, "LogClient-%d.dat", atoi(argv[2]));
 
     CreationFichierTransaction(NomFichier, 50);
 
@@ -45,27 +45,31 @@ int main(int argc, char *argv[]) {
     }
 
     for(;;) {
-        printf ("menu :\n");
+        printf ("\n\nMenu :\n");
         printf("1) Demande ticket  \n");
         printf("2) Affichage du fichier \n");
         printf("3) Exit\n");
         printf("---------------------\n");
-        c = LocalReadChar();   /* Readchar se trouve dans la librairie Physlib */
-        printf("\n%c\n", c);
+        c = LocalReadChar();
+        // printf("\n%c\n", c);
         switch(c) {
-            case '1' :
+            case '1':
                 res = RequeteReservation(NomFichier);
-                printf("Resultat %d \n", res);
+                if(res > 0) {
+                    printf("Bienvenue, votre ticket porte le numero %d.\n", res);
+                } else {
+                    printf("Il y a eu une erreur lors de la reservation de votre ticket...\n");
+                }
                 break;
-            case '2' :
-                res = AffichageFichier(NomFichier);
-                printf("Resultat %d \n", res);
+            case '2':
+                AffichageFichier(NomFichier);
                 break;
-            case '3' :
+            case '3':
             	close(Desc);
-                exit(0);
+                return 0;
         }
     }
+
 }
 
 int RequeteReservation(char* Fichier){
@@ -86,17 +90,13 @@ int RequeteReservation(char* Fichier){
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    // memset(&notreRequetePerso, 0, sizeof(struct RequeteBDEF));
-    // tm = sizeof(struct RequeteBDEF);
-
     rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
     if (rc == -1) {
         perror("ReceiveDatagram");
         return -1;
     } else {
         fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
-        if (notreRequetePerso.NumeroTicket>0)
-        {
+        if (notreRequetePerso.NumeroTicket > 0) {
         	ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
         	NumTransac++;
         }
