@@ -82,8 +82,8 @@ int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
             case RESERVATION:
                 return ReservationTicketBDEF(
                     NOMDEFICHIER,
-                    psor.sin_addr.s_addr,
-                    psor.sin_port,
+                    ntohl(psor.sin_addr.s_addr),
+                    ntohs(psor.sin_port),
                     data.NumTransac,
                     data.Heure,
                     NULL
@@ -91,8 +91,8 @@ int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
             case PAIEMENT:
                 return PaiementTicketBDEF(
                     NOMDEFICHIER,
-                    psor.sin_addr.s_addr,
-                    psor.sin_port,
+                    ntohl(psor.sin_addr.s_addr),
+                    ntohs(psor.sin_port),
                     data.NumTransac,
                     data.Heure,
                     data.NumeroTicket
@@ -100,8 +100,8 @@ int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
             case SORTIE:
                 return SortieParkingBDEF(
                     NOMDEFICHIER,
-                    psor.sin_addr.s_addr,
-                    psor.sin_port,
+                    ntohl(psor.sin_addr.s_addr),
+                    ntohs(psor.sin_port),
                     data.NumTransac,
                     data.Heure,
                     data.NumeroTicket
