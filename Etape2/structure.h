@@ -10,5 +10,6 @@ struct RequeteBDEF {
     enum TypeRequete Type;
     int NumTransac;
     int NumeroTicket;
+    int Heure;
     enum Action Action;
 };

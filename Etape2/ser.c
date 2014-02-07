@@ -12,6 +12,8 @@ Un serveur recevant une structure et lié à un client particulier
 #include "../Parking/parking.h"
 #include "structure.h"
 
+#define NOMDEFICHIER "transaction.dat"
+
 int main(int argc, char *argv[]) {
     int rc;
     int Desc;
@@ -26,8 +28,7 @@ int main(int argc, char *argv[]) {
     memset(&psor, 0, sizeof(struct sockaddr_in));
 
     printf("Ceci est le serveur\n");
-    if (argc!=5)
-    {
+    if (argc!=5) {
         printf("ser ser port cli port\n");
         exit(1);
     }
@@ -45,6 +46,8 @@ int main(int argc, char *argv[]) {
     } else {
         fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
     }
+
+    processDatagramBDEF(notreRequetePerso, psor);
 
     /* reponse avec psoc */
     notreRequetePerso.Type = Reponse;
@@ -67,4 +70,39 @@ int main(int argc, char *argv[]) {
     // }
 
     return 0;
+}
+
+int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
+    if(data.Type == Question) {
+        switch(data.Action) {
+            case ENTETE:
+                return -15;
+            case RESERVATION:
+                return ReservationTicketBDEF(
+                    NOMDEFICHIER,
+                    psor.sin_addr.s_addr,
+                    psor.sin_port,
+                    data.NumTransac,
+                    data.Heure,
+                    &PlacesLibres
+                );
+            case PAIEMENT:
+                return PaiementTicketBDEF(
+                    NOMDEFICHIER,
+                    psor.sin_addr.s_addr,
+                    psor.sin_port,
+                    data.NumTransac,
+                    data.Heure,
+                    data.NumeroTicket
+                );
+            case SORTIE:
+                return SortieParkingBDEF(
+                    NOMDEFICHIER,
+                    psor.sin_addr.s_addr,
+                    psor.sin_port,
+                    data.NumTransac,
+                    data.Heure,
+                    data.NumeroTicket
+                );
+    }
 }
