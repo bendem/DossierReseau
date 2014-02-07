@@ -22,14 +22,12 @@ int main(int argc, char *argv[]) {
     int rc;
     int Desc;
     struct sockaddr_in psoo; /* o = origine */
-    struct sockaddr_in psoc; /* s = cible */
     struct sockaddr_in psor; /* r = remote */
 
     struct RequeteBDEF notreRequetePerso;
 
-    memset(&psoo, 0, sizeof(struct sockaddr_in));
-    memset(&psoc, 0, sizeof(struct sockaddr_in));
-    memset(&psor, 0, sizeof(struct sockaddr_in));
+    // memset(&psoo, 0, sizeof(struct sockaddr_in));
+    // memset(&psor, 0, sizeof(struct sockaddr_in));
 
     printf("Ceci est le serveur\n");
     if (argc!=3) {
