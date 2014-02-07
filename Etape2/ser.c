@@ -16,13 +16,13 @@ int main(int argc, char *argv[]) {
     int rc;
     int Desc;
     struct sockaddr_in psoo; /* o = origine */
-    struct sockaddr_in psos; /* s = serveur */
+    struct sockaddr_in psoc; /* s = cible */
     struct sockaddr_in psor; /* r = remote */
 
     struct RequeteBDEF notreRequetePerso;
 
     memset(&psoo, 0, sizeof(struct sockaddr_in));
-    memset(&psos, 0, sizeof(struct sockaddr_in));
+    memset(&psoc, 0, sizeof(struct sockaddr_in));
     memset(&psor, 0, sizeof(struct sockaddr_in));
 
     printf("Ceci est le serveur\n");
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    Desc = CreateSockets(&psoo, &psos, argv[1], atoi(argv[2]), argv[3], atoi(argv[4]));
+    Desc = CreateSockets(&psoo, &psoc, argv[1], atoi(argv[2]), argv[3], atoi(argv[4]));
     if (Desc == -1) {
         perror("CreateSockets");
     } else {
@@ -46,10 +46,10 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
     }
 
-    /* reponse avec psos */
+    /* reponse avec psoc */
     notreRequetePerso.Type = Reponse;
     notreRequetePerso.NumeroTicket = 2;
-    rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psos);
+    rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
     if (rc == -1) {
         perror("SendDatagram:");
     } else {
