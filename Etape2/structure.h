@@ -1,8 +1,8 @@
 
 enum TypeRequete {
-   Question = 1,
-   Reponse  = 2
- };
+    Question = 1,
+    Reponse  = 2
+};
 
 
 
