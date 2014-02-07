@@ -19,6 +19,7 @@ int processDatagramBDEF(struct RequeteBDEF, struct sockaddr_in);
 
 
 int main(int argc, char *argv[]) {
+    int i;
     int rc;
     int Desc;
     struct sockaddr_in psoo; /* o = origine */
@@ -44,22 +45,24 @@ int main(int argc, char *argv[]) {
         printf(" CreateSockets : %d \n", Desc);
     }
 
-    rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
-    if (rc == -1) {
-        perror("ReceiveDatagram");
-    } else {
-        fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
-    }
+    for (i = 0; i < 2; ++i) {
+        rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+        if (rc == -1) {
+            perror("ReceiveDatagram");
+        } else {
+            fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
+        }
 
-    notreRequetePerso.NumeroTicket = processDatagramBDEF(notreRequetePerso, psor);
-    notreRequetePerso.Type = Reponse;
+        notreRequetePerso.NumeroTicket = processDatagramBDEF(notreRequetePerso, psor);
+        notreRequetePerso.Type = Reponse;
 
-    /* reponse avec psoc */
-    rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
-    if (rc == -1) {
-        perror("SendDatagram:");
-    } else {
-        fprintf(stderr, "bytes:%d\n", rc);
+        /* reponse avec psoc */
+        rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
+        if (rc == -1) {
+            perror("SendDatagram:");
+        } else {
+            fprintf(stderr, "bytes:%d\n", rc);
+        }
     }
 
     /* reponse avex psor r = remote */
