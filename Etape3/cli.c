@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
                 AffichageFichier(NomFichier);
                 break;
             case '3':
-            	close(Desc);
+                close(Desc);
                 return 0;
         }
     }
@@ -77,7 +77,7 @@ int RequeteReservation(char* Fichier){
     struct RequeteBDEF notreRequetePerso;
     int rc;
 
-	notreRequetePerso.Type = Question;
+    notreRequetePerso.Type = Question;
     notreRequetePerso.Action = RESERVATION;
     notreRequetePerso.NumTransac = NumTransac;
     notreRequetePerso.Heure= GetTimeBDEF();
@@ -97,8 +97,8 @@ int RequeteReservation(char* Fichier){
     } else {
         fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
         if (notreRequetePerso.NumeroTicket > 0) {
-        	ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
-        	NumTransac++;
+            ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
+            NumTransac++;
         }
 
         return notreRequetePerso.NumeroTicket;
