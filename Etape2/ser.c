@@ -8,6 +8,7 @@ Un serveur recevant une structure et lié à un client particulier
 
 #include <stdio.h>
 #include <string.h>
+#include <netinet/in.h>
 #include "../physlib/physlib.h"
 #include "../Parking/parking.h"
 #include "structure.h"
