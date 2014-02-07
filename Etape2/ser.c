@@ -57,23 +57,13 @@ int main(int argc, char *argv[]) {
         notreRequetePerso.Type = Reponse;
 
         /* reponse avec psoc */
-        rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
+        rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("SendDatagram:");
         } else {
             fprintf(stderr, "bytes:%d\n", rc);
         }
     }
-
-    /* reponse avex psor r = remote */
-
-    // strcat(notreRequetePerso.Message, "X2");
-    // rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
-    // if (rc == -1) {
-    //     perror("SendDatagram:");
-    // } else {
-    //     fprintf(stderr, "bytes:%d\n", rc);
-    // }
 
     return 0;
 }

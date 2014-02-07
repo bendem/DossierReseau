@@ -32,12 +32,12 @@ int main(int argc, char *argv[]) {
     memset(&psor, 0, sizeof(struct sockaddr_in));
 
     printf("Ceci est le serveur\n");
-    if (argc!=5) {
-        printf("ser ser port cli port\n");
+    if (argc!=3) {
+        printf("ser ser port\n");
         exit(1);
     }
 
-    Desc = CreateSockets(&psoo, &psoc, argv[1], atoi(argv[2]), argv[3], atoi(argv[4]));
+    Desc = CreateSockets(&psoo, NULL, argv[1], atoi(argv[2]), NULL, 0);
     if (Desc == -1) {
         perror("CreateSockets");
     } else {
@@ -56,23 +56,13 @@ int main(int argc, char *argv[]) {
         notreRequetePerso.Type = Reponse;
 
         /* reponse avec psoc */
-        rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
+        rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("SendDatagram:");
         } else {
             fprintf(stderr, "bytes:%d\n", rc);
         }
     }
-
-    /* reponse avex psor r = remote */
-
-    // strcat(notreRequetePerso.Message, "X2");
-    // rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
-    // if (rc == -1) {
-    //     perror("SendDatagram:");
-    // } else {
-    //     fprintf(stderr, "bytes:%d\n", rc);
-    // }
 
     return 0;
 }
