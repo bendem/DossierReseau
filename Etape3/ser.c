@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     // memset(&psor, 0, sizeof(struct sockaddr_in));
 
     printf("Ceci est le serveur\n");
-    if (argc!=3) {
+    if (argc != 3) {
         printf("ser ser port\n");
         exit(1);
     }

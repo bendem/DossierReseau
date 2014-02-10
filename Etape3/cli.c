@@ -29,10 +29,9 @@ int main(int argc, char *argv[]) {
 
     sprintf(NomFichier, "LogClient-%d.dat", atoi(argv[2]));
 
-    NumTransac=RecoverFichierTransaction(NomFichier);
+    NumTransac = RecoverFichierTransaction(NomFichier);
 
-    if (NumTransac==0)
-    {
+    if (NumTransac == 0) {
         CreationFichierTransaction(NomFichier, 50);
     }
 
@@ -119,17 +118,16 @@ char LocalReadChar() {
 }
 
 int RecoverFichierTransaction(char* NomFichier){
-
     FILE* fp;
     struct Transaction Transac;
 
-    fp=fopen(NomFichier, "r");
+    fp = fopen(NomFichier, "r");
 
-    if(fp==NULL){
+    if(fp == NULL){
         return 0;
     }
 
-    fseek(fp, 0, SEEK_END-sizeof(struct Transaction));
+    fseek(fp, 0, SEEK_END - sizeof(struct Transaction));
     fread(&Transac, sizeof(struct Transaction), 1, fp);
-    return Transac.NumTransac+1;
+    return Transac.NumTransac + 1;
 }
