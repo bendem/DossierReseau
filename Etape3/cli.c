@@ -13,6 +13,8 @@ le serveur fait de même
 
 int RequeteReservation(char*);
 char LocalReadChar();
+int RecoverFichierTransaction(char* NomFichier);
+
 
 int Desc;
 int NumTransac = 0;
@@ -27,7 +29,12 @@ int main(int argc, char *argv[]) {
 
     sprintf(NomFichier, "LogClient-%d.dat", atoi(argv[2]));
 
-    CreationFichierTransaction(NomFichier, 50);
+    NumTransac=RecoverFichierTransaction(NomFichier);
+
+    if (NumTransac==0)
+    {
+        CreationFichierTransaction(NomFichier, 50);
+    }
 
     memset(&psoo, 0, sizeof(struct sockaddr_in));
     memset(&psoc, 0, sizeof(struct sockaddr_in));
@@ -109,4 +116,20 @@ char LocalReadChar() {
     char Tampon[80];
     fgets(Tampon, sizeof Tampon, stdin);
     return Tampon[0];
+}
+
+int RecoverFichierTransaction(char* NomFichier){
+
+    FILE* fp;
+    struct Transaction Transac;
+
+    fp=fopen(NomFichier, "r");
+
+    if(fp==NULL){
+        return 0;
+    }
+
+    fseek(fp, 0, SEEK_END-sizeof(struct Transaction));
+    fread(&Transac, sizeof(struct Transaction), 1, fp);
+    return Transac.NumTransac+1;
 }
