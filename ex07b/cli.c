@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
  int Port, Ip;
  char Tampon[80];
  int returned_from_longjump;
- unsigned int time_interval ;
+ unsigned int time_interval;
  int ret;
  int Compteur = 0;
 

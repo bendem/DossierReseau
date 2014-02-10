@@ -29,7 +29,7 @@ struct Interface *Ipsuiv;
 struct Interface  *CreationInterface(char *NomInterface, struct Interface *pl);
 struct Interface  *AjouteInterface(char *NomInterface, struct Interface *pl);
 struct Interface *RechercheInterfaceNom(char *NomInterface, struct Interface *pl);
-struct Interface *RechercheInterfaceDesc(int Desc, struct Interface *pl) ;
+struct Interface *RechercheInterfaceDesc(int Desc, struct Interface *pl);
 struct Interface *RechercheInterfaceLigne(int Ligne, struct Interface *pl);
 struct Interface *SupprimeInterfaces(char *NomInterface, struct Interface *pl);
 struct Interface *InterfaceSuivante(struct Interface *pi);

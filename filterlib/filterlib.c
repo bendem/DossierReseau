@@ -79,7 +79,7 @@ void LectureTableFiltrage(char *NomFichier, struct Regle TableFiltrage[], int *N
  {
   printf(" >-> %c \n", LigneFichier[0]);
   if (LigneFichier[0]=='#')
-     ;
+    ;
   else
   	{
 sscanf(LigneFichier, "%d %s \\ %d %s \\ %d %d %d %s %s\n", &Ligne, IPSource, &MS, IPDestination, &MD, &PortSource, &PortDestination, Protocole, Politique);

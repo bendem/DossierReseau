@@ -22,10 +22,10 @@
 
 struct NomsResolus
 {
- NomDNS Nom ;
- int	Ip  ;
+ NomDNS Nom;
+ int	Ip ;
  int    Vide;
- int	Fin ;
+ int	Fin;
 }; */
 
 int AjoutCacheDNS(struct NomsResolus LesNomsResolus[], NomDNS Nom, int UneIp)
@@ -38,8 +38,8 @@ int AjoutCacheDNS(struct NomsResolus LesNomsResolus[], NomDNS Nom, int UneIp)
   {
     strncpy(LesNomsResolus[i].Nom, Nom, sizeof(LesNomsResolus[i].Nom));
     LesNomsResolus[i].Ip   = UneIp;
-    LesNomsResolus[i].Vide = 0 ;
-    LesNomsResolus[i].Fin  = 0 ;
+    LesNomsResolus[i].Vide = 0;
+    LesNomsResolus[i].Fin  = 0;
     return(1);
   }
   else
@@ -81,8 +81,8 @@ int EffaceCacheDNS(struct NomsResolus  LesNomsResolus[])
 
  while(!LesNomsResolus[i].Fin)
  {
-    LesNomsResolus[i].Vide = 1 ;
-    LesNomsResolus[i].Fin  = 0 ;
+    LesNomsResolus[i].Vide = 1;
+    LesNomsResolus[i].Fin  = 0;
     i++;
  }
  return(1);
@@ -101,14 +101,14 @@ struct NomsResolus* InitialiseCacheDNS(int NE)
  i=0;
  while(NE > 0)
  {
-    NR[i].Vide = 1 ;
-    NR[i].Fin  = 0 ;
+    NR[i].Vide = 1;
+    NR[i].Fin  = 0;
     i++;
     NE--;
  }
 
- NR[i].Vide = 1 ;
- NR[i].Fin  = 1 ;
+ NR[i].Vide = 1;
+ NR[i].Fin  = 1;
  return(NR);
 };
 

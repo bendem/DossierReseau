@@ -17,7 +17,7 @@ then
        COFF|ELF|Elf)
         echo 	"suppression" $j
         rm $j
-       ;;
+      ;;
     esac
   done
   cd ..

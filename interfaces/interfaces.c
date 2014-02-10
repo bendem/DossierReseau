@@ -32,9 +32,9 @@ struct Interface  *CreationInterface(char *NomInterface, struct Interface *pl)
   pcur = (struct Interface *) malloc(sizeof(struct Interface));
   strncpy(pcur->INomInterface, NomInterface, sizeof(pcur->INomInterface));
   pcur->Ipsuiv = pl;
-  pcur->ILiaison =-1;   ; 	 /* Le premier est sacrifie  et Liaison contient le descripteur */
+  pcur->ILiaison =-1;  ; 	 /* Le premier est sacrifie  et Liaison contient le descripteur */
   pcur->IIP = -1;         /* Donne les adresses IP des lignes */
-  pcur->ILigne = -1 ;      /* Numero de la ligne ou Interface */
+  pcur->ILigne = -1;      /* Numero de la ligne ou Interface */
   pcur->IEntreeTableRoutage =-1;
   fprintf(stderr, "le nouveau nom est %s \n", pcur->INomInterface);
   return(pcur);
@@ -87,7 +87,7 @@ struct Interface *RechercheInterfaceNom(char *NomInterface, struct Interface *pl
 }
 
 struct Interface *RechercheInterfaceDesc(int Desc, struct Interface *pl)
-{ ;
+{;
  struct Physique * PP;
  if (pl == NULL)
      return(pl);
@@ -103,7 +103,7 @@ struct Interface *RechercheInterfaceDesc(int Desc, struct Interface *pl)
 }
 
 struct Interface *RechercheInterfaceLigne(int Ligne, struct Interface *pl)
-{ ;
+{;
  struct Physique * PP;
  if (pl == NULL)
      return(pl);

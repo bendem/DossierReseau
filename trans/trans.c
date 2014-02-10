@@ -5,7 +5,7 @@ int main(int argc, char *argv[])
 {
  FILE *fr;
  FILE *fw;
- char ch ;
+ char ch;
 
  if (argc != 3)
     exit(0);
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
  while(!feof(fr))
  {
   if (ch == 13)
-    ;
+   ;
   else
      fputc(ch, fw);
   ch = fgetc(fr);

@@ -12,7 +12,7 @@ char* SuffixeDe(char *Suffixe, char* Chaine)
  if (LongSuffixe == 0 || LongChaine == 0)
      return NULL;
  Suffixe= Suffixe + LongSuffixe-1;
- Chaine= Chaine + LongChaine-1 ;
+ Chaine= Chaine + LongChaine-1;
   while (LongChaine && LongSuffixe && *Suffixe==*Chaine )
   {
    LongSuffixe--;

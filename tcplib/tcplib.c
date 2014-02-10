@@ -71,7 +71,7 @@ int generer_masque(int NbrBits)
  if (NbrBits == 0  )
  	return(0);
  Decalage = 32 - NbrBits;
- Res = 1 ;
+ Res = 1;
  while(NbrBits > 0)
  {
    Res = Res << 1;
@@ -109,10 +109,10 @@ int creer_socket(int type, u_long *ai, u_short port, struct sockaddr_in *pin)
 
   memset(pin, 0, sizeof(struct sockaddr_in));
   pin->sin_family      = AF_INET;
-  pin->sin_addr.s_addr = *ai ;
+  pin->sin_addr.s_addr = *ai;
   pin->sin_port        = htons(port);
 /*  sa.sin_family      = AF_INET;
-    sa.sin_addr.s_addr = *ai ;
+    sa.sin_addr.s_addr = *ai;
     sa.sin_port        = htons(port); */
 /* numero de port en format reseau */
 

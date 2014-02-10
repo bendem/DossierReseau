@@ -13,7 +13,7 @@
 
 struct ListeTimer
 {
- int num   ;
+ int num  ;
  long clktck;
  struct ListeTimer *psuiv;
 };

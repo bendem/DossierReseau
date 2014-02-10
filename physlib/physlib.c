@@ -12,7 +12,7 @@ Vanstapel Herman EPL
 /* Structure d'une sockaddr_in
 
 pin->sin_family      = AF_INET;
-pin->sin_addr.s_addr = *ai ; adresse internet
+pin->sin_addr.s_addr = *ai; adresse internet
 pin->sin_port        = htons(port);
 
 */
@@ -87,7 +87,7 @@ int GetIP(struct sockaddr_in *pin)
 {
     int ip;
     ip = ntohl(pin->sin_addr.s_addr);
-    return(ip) ;
+    return(ip);
 
 }
 
@@ -95,7 +95,7 @@ int GetPort(struct sockaddr_in *pin)
 {
     int port;
     port = ntohs(pin->sin_port);
-    return(port) ;
+    return(port);
 }
 
 /* Fonctions clavier */

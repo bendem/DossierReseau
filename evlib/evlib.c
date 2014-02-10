@@ -25,14 +25,14 @@ int PrepareEvenement(struct gEvenement *gEv, int HLs[], int HEs[], int nbr, int 
      }
   if (HEs[i])
      {
-     FD_SET(i, &(gEv->wfds)) ;
+     FD_SET(i, &(gEv->wfds));
      gEv->maxdesc = i + 1;
      }
   i++;
  }
 
- gEv->tv.tv_sec  = ts  ;
- gEv->tv.tv_usec = tms ;
+ gEv->tv.tv_sec  = ts ;
+ gEv->tv.tv_usec = tms;
  return(1);
 }
 

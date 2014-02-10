@@ -24,10 +24,10 @@
 
 struct NomsResolus
 {
- NomDNS Nom ;
- int	Ip  ;
+ NomDNS Nom;
+ int	Ip ;
  int    Vide;
- int	Fin ;
+ int	Fin;
 };
 
 
