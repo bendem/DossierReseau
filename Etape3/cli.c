@@ -127,7 +127,7 @@ int RecoverFichierTransaction(char* NomFichier){
         return 0;
     }
 
-    fseek(fp, 0, SEEK_END - sizeof(struct Transaction));
+    fseek(fp, sizeof(struct Transaction), SEEK_END);
     fread(&Transac, sizeof(struct Transaction), 1, fp);
     return Transac.NumTransac + 1;
 }
