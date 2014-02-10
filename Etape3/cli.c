@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
     sprintf(NomFichier, "LogClient-%d.dat", atoi(argv[2]));
 
     NumTransac = RecoverFichierTransactionBDEF(NomFichier);
+    printf("%d\n", NumTransac);
 
     if (NumTransac == 0) {
         CreationFichierTransaction(NomFichier, 50);
@@ -127,7 +128,7 @@ int RecoverFichierTransactionBDEF(char* NomFichier){
         return 0;
     }
 
-    fseek(fp, sizeof(struct Transaction), SEEK_END);
+    fseek(fp, -sizeof(struct Transaction), SEEK_END);
     fread(&Transac, sizeof(struct Transaction), 1, fp);
     return Transac.NumTransac + 1;
 }

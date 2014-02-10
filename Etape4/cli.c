@@ -11,9 +11,9 @@ le serveur fait de même
 #include "../Parking/parking.h"
 #include "structure.h"
 
-int RequeteReservation(char*);
+int RequeteReservationBDEF(char*);
 char LocalReadChar();
-int RecoverFichierTransaction(char* NomFichier);
+int RecoverFichierTransactionBDEF(char* NomFichier);
 
 
 int Desc;
@@ -29,7 +29,8 @@ int main(int argc, char *argv[]) {
 
     sprintf(NomFichier, "LogClient-%d.dat", atoi(argv[2]));
 
-    NumTransac = RecoverFichierTransaction(NomFichier);
+    NumTransac = RecoverFichierTransactionBDEF(NomFichier);
+    printf("%d\n", NumTransac);
 
     if (NumTransac == 0) {
         CreationFichierTransaction(NomFichier, 50);
@@ -60,7 +61,7 @@ int main(int argc, char *argv[]) {
         // printf("\n%c\n", c);
         switch(c) {
             case '1':
-                res = RequeteReservation(NomFichier);
+                res = RequeteReservationBDEF(NomFichier);
                 if(res > 0) {
                     printf("Bienvenue, votre ticket porte le numero %d.\n", res);
                 } else {
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-int RequeteReservation(char* Fichier){
+int RequeteReservationBDEF(char* Fichier){
 
     struct RequeteBDEF notreRequetePerso;
     int rc;
@@ -117,7 +118,7 @@ char LocalReadChar() {
     return Tampon[0];
 }
 
-int RecoverFichierTransaction(char* NomFichier){
+int RecoverFichierTransactionBDEF(char* NomFichier){
     FILE* fp;
     struct Transaction Transac;
 
@@ -127,7 +128,7 @@ int RecoverFichierTransaction(char* NomFichier){
         return 0;
     }
 
-    fseek(fp, sizeof(struct Transaction), SEEK_END);
+    fseek(fp, -sizeof(struct Transaction), SEEK_END);
     fread(&Transac, sizeof(struct Transaction), 1, fp);
     return Transac.NumTransac + 1;
 }

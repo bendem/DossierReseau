@@ -227,18 +227,21 @@ long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
 }
 
 int GetTimeBDEF() {
-	// time_t timer;
-	// struct tm *timeTM;
-	// int heure;
+    // time_t timer;
+    // struct tm *timeTM;
+    // int heure;
 
-	// time(&timer);
-	// timeTM = localtime(&timer);
-	// heure = (timeTM->tm_hour * 100 + timeTM->tm_min);
+    // time(&timer);
+    // timeTM = localtime(&timer);
+    // heure = (timeTM->tm_hour * 100 + timeTM->tm_min);
 
-	// return heure;
+    // return heure;
 
-	char tampon[5];
-	fgets(tampon, sizeof tampon, stdin);
-	tampon[5] = 0;
-	return atoi(tampon);
+    char tampon[80];
+
+    printf("Quelle heure est-il? ");
+    fgets(tampon, sizeof tampon, stdin);
+    tampon[5] = 0;
+
+    return atoi(tampon);
 }
