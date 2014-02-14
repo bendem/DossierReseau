@@ -13,7 +13,7 @@ le serveur fait de même
 #include "../siglib/sigs.h"
 
 
-int  RequeteReservationBDEF(char*);
+int  RequeteReservationBDEF(char*, int);
 char LocalReadChar();
 int  RecoverFichierTransactionBDEF(char*);
 void HandlerSigAlarm(int);
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     memset(&psor, 0, sizeof(struct sockaddr_in));
 
     if (argc != 5) {
-        printf("cli client portc serveur ports\n");
+        printf("Usage : ./cli ip_client port_port ip_server port_server\n");
         exit(1);
     }
     Desc = CreateSockets(&psoo, &psoc, argv[1], atoi(argv[2]), argv[3], atoi(argv[4]));
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
         // printf("\n%c\n", c);
         switch(c) {
             case '1':
-                res = RequeteReservationBDEF(NomFichier);
+                res = RequeteReservationBDEF(NomFichier, GetTimeBDEF());
                 if(res > 0) {
                     printf("Bienvenue, votre ticket porte le numero %d.\n", res);
                 } else {
@@ -84,14 +84,14 @@ int main(int argc, char *argv[]) {
 
 }
 
-int RequeteReservationBDEF(char* Fichier){
+int RequeteReservationBDEF(char* Fichier, int heure){
     struct RequeteBDEF notreRequetePerso;
     int rc;
 
     notreRequetePerso.Type = Question;
     notreRequetePerso.Action = RESERVATION;
     notreRequetePerso.NumTransac = NumTransac;
-    notreRequetePerso.Heure = GetTimeBDEF();
+    notreRequetePerso.Heure = heure;
 
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
 
@@ -107,7 +107,7 @@ int RequeteReservationBDEF(char* Fichier){
     if (rc == -1) {
         if (errno == EINTR && IsSigAlarm == 1) {
         	IsSigAlarm = 0;
-        	return RequeteReservationBDEF(Fichier);
+        	return RequeteReservationBDEF(Fichier, heure);
         }
 
         perror("ReceiveDatagram");

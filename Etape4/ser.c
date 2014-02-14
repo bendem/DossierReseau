@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
     printf("Ceci est le serveur\n");
     if (argc != 3) {
-        printf("ser ser port\n");
+        printf("Usage de la commande : ./ser ip_server port_server\n");
         exit(1);
     }
 
@@ -39,11 +39,11 @@ int main(int argc, char *argv[]) {
     if (Desc == -1) {
         perror("CreateSockets");
     } else {
-        printf(" CreateSockets : %d \n", Desc);
+        printf("CreateSockets : %d \n", Desc);
     }
 
     for (;;) {
-        printf("\tServeur en pause, appuyer sur <enter> pour continuer\n");
+        printf("---> Pause, appuyer sur <enter> pour continuer <---\n");
         getchar();
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
