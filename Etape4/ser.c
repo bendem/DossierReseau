@@ -43,6 +43,8 @@ int main(int argc, char *argv[]) {
     }
 
     for (;;) {
+        printf("\tServeur en pause, appuyer sur <enter> pour continuer\n");
+        getchar();
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("ReceiveDatagram");
