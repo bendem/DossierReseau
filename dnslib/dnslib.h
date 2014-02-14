@@ -14,6 +14,7 @@
 #include "../evlib/evlib.h"
 #include "../physlib/physlib.h"
 #include "../protocol/protocol.h"
+#include "../tcplib/tcplib.h"
 
 /* struct RequeteDNS{
       int Type;

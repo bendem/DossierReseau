@@ -5,12 +5,6 @@
 -----------------------------------------------------------------------
 -----------------------------------------------------------------------*/
 
-#include <stdio.h>
-#include <string.h>
-#include "../tcplib/tcplib.h"
-#include "../evlib/evlib.h"
-#include "../physlib/physlib.h"
-#include "../protocol/protocol.h"
 #include "dnslib.h"
 
 /* struct RequeteDNS{
