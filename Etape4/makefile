@@ -16,15 +16,15 @@ all:    admin cli ser
 
 admin: admin.c $(LIBS)
 	echo "Compilation de admin"
-	cc -o admin  $^
+	cc -o $@  $^
 
-physlib.o: ../physlib/physlib.h ../physlib/physlib.c
+physlib.o: ../physlib/physlib.c ../physlib/physlib.h
 	echo "Compilation de physlib.o"
-	cc -c ../physlib/physlib.c
+	cc -c $<
 
-tcplib.o: ../tcplib/tcplib.h ../tcplib/tcplib.c
+tcplib.o: ../tcplib/tcplib.c ../tcplib/tcplib.h
 	echo "Compilation de tcplib.o"
-	cc -c ../tcplib/tcplib.c
+	cc -c $<
 
 cli: cli.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o
 	echo "Compilation de client"

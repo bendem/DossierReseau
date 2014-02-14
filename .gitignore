@@ -4,3 +4,8 @@ desktop.ini
 *~
 *.log
 *.dat
+
+# ignore executables
+cli
+ser
+admin
