@@ -87,7 +87,6 @@ int main(int argc, char *argv[]) {
 int RequeteReservationBDEF(char* Fichier, int heure){
     struct RequeteBDEF notreRequetePerso;
     int rc;
-    int received=0;
 
     notreRequetePerso.Type = Question;
     notreRequetePerso.Action = RESERVATION;
@@ -104,30 +103,24 @@ int RequeteReservationBDEF(char* Fichier, int heure){
 
     alarm(30);
 
-    while(!received){
-	    rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
-	    if (rc == -1) {
-	        if (errno == EINTR && IsSigAlarm == 1) {
-	        	IsSigAlarm = 0;
-	        	return RequeteReservationBDEF(Fichier, heure);
-	        }
+    rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+    if (rc == -1) {
+        if (errno == EINTR && IsSigAlarm == 1) {
+        	IsSigAlarm = 0;
+        	return RequeteReservationBDEF(Fichier, heure);
+        }
 
-	        perror("ReceiveDatagram");
-	        return -1;
-	    } else {
-	        if (NumTransac!=notreRequetePerso.NumTransac)
-	        {
-	        	continue;
-	        }
-	        fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
-	        if (notreRequetePerso.NumeroTicket > 0) {
-	            ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
-	            NumTransac++;
-	        }
+        perror("ReceiveDatagram");
+        return -1;
+    } else {
+        fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
+        if (notreRequetePerso.NumeroTicket > 0) {
+            ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
+            NumTransac++;
+        }
 
-	        return notreRequetePerso.NumeroTicket;
-	    }
-	}
+        return notreRequetePerso.NumeroTicket;
+    }
 }
 
 char LocalReadChar() {
