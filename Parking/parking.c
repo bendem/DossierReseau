@@ -2,9 +2,9 @@
 
 void LocalIpv4ToS(int ip, char *str){
     int NM[4];
-    if (ip==0)
+    if (ip==0) {
         strcpy(str, "0.0.0.0");
-    else{
+    } else {
         NM[0] = (ip >> 24) & 255;
         NM[1] = (ip >> 16) & 255;
         NM[2] = (ip >> 8) & 255;
@@ -32,12 +32,11 @@ int CreationFichierTransaction(char *Nom, int nombreplaces){
     if (Fichier == NULL){
         fprintf(stderr, "Echec Ouverture\n");
         return(-1);
-    }
-    else{
+    } else {
         fprintf(stderr, "Ouverture reussie \n");
     }
+
     fseek(Fichier, 0, SEEK_END);
-    /* fseek ne retourne pas la nouvelle position mais ftell */
     nbr = ftell(Fichier);
     fprintf(stderr, "Position dans le fichier %d\n", nbr);
     if (nbr>0){
@@ -101,11 +100,20 @@ int AffichageFichier(char *Nom){
 
 int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int *PlacesLibres) {
     struct Transaction  UneTransaction;
+    int numTicket;
     FILE *fp = fopen(Nom, "r+");
     if(fp == NULL) {
         perror("Erreur d'ouverture de fichier");
         return -1;
     }
+
+    // Transaction déjà effectuée?
+    numTicket = existsTransaction(Nom, IP, Port, NumTransac, RESERVATION);
+    if(numTicket) {
+        return numTicket;
+    }
+
+    // Place libre?
     fread(&UneTransaction, sizeof(struct Transaction), 1, fp);
     if(UneTransaction.PlacesLibres == 0) {
         return -1;
@@ -224,6 +232,20 @@ long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
 
     fclose(fp);
     return ticketFound;
+}
+
+int existsTransaction(char *nomFichier, int ip, int port, int numTransac, enum Action type) {
+    struct Transaction transac;
+    FILE *fp = fopen(nomFichier, "r");
+    fseek(fp, sizeof(struct Transaction), SEEK_END);
+    while(fread(&transac, sizeof(struct Transaction), 1, fp)) {
+        if(transac.IP == ip && transac.Port == port && transac.NumTransac == numTransac && transac.UneAction == type) {
+            return transac.NumTicket;
+        }
+        fseek(fp, -sizeof(struct Transaction), SEEK_CUR);
+    }
+
+    return 0;
 }
 
 int GetTimeBDEF() {
