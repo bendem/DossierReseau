@@ -110,6 +110,7 @@ int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure
     // Transaction déjà effectuée?
     numTicket = existsTransaction(Nom, IP, Port, NumTransac, RESERVATION);
     if(numTicket) {
+        printf("Transaction deja existante, renvoi du numero de ticket\n");
         return numTicket;
     }
 
@@ -239,8 +240,13 @@ int existsTransaction(char *nomFichier, int ip, int port, int numTransac, enum A
     FILE *fp = fopen(nomFichier, "r");
     fseek(fp, sizeof(struct Transaction), SEEK_END);
     while(fread(&transac, sizeof(struct Transaction), 1, fp)) {
-        if(transac.IP == ip && transac.Port == port && transac.NumTransac == numTransac && transac.UneAction == type) {
-            return transac.NumTicket;
+        if(transac.IP == ip && transac.Port == port && transac.UneAction == type) {
+            if(transac.NumTransac == numTransac) {
+                return transac.NumTicket;
+            }
+            if(transac.NumTransac < numTransac) {
+                return 0;
+            }
         }
         fseek(fp, -sizeof(struct Transaction), SEEK_CUR);
     }
