@@ -13,10 +13,10 @@ le serveur fait de même
 #include "../siglib/sigs.h"
 
 
-int RequeteReservationBDEF(char*);
+int  RequeteReservationBDEF(char*);
 char LocalReadChar();
-int RecoverFichierTransactionBDEF(char* NomFichier);
-void HandlerSigAlarm(int NumSig);
+int  RecoverFichierTransactionBDEF(char*);
+void HandlerSigAlarm(int);
 
 int Desc;
 int IsSigAlarm = 0;
@@ -85,14 +85,13 @@ int main(int argc, char *argv[]) {
 }
 
 int RequeteReservationBDEF(char* Fichier){
-
     struct RequeteBDEF notreRequetePerso;
     int rc;
 
     notreRequetePerso.Type = Question;
     notreRequetePerso.Action = RESERVATION;
     notreRequetePerso.NumTransac = NumTransac;
-    notreRequetePerso.Heure= GetTimeBDEF();
+    notreRequetePerso.Heure = GetTimeBDEF();
 
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
 
@@ -106,13 +105,12 @@ int RequeteReservationBDEF(char* Fichier){
 
     rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
     if (rc == -1) {
-        if (errno==EINTR && IsSigAlarm==1)
-        {
-        	IsSigAlarm=0;
+        if (errno == EINTR && IsSigAlarm == 1) {
+        	IsSigAlarm = 0;
         	return RequeteReservationBDEF(Fichier);
         }
-        perror("ReceiveDatagram");
 
+        perror("ReceiveDatagram");
         return -1;
     } else {
         fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
@@ -146,6 +144,6 @@ int RecoverFichierTransactionBDEF(char* NomFichier){
     return Transac.NumTransac + 1;
 }
 
-void HandlerSigAlarm(int NumSig){
-	IsSigAlarm=1;
+void HandlerSigAlarm(int sig){
+	IsSigAlarm = 1;
 }
