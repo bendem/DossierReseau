@@ -103,25 +103,32 @@ int RequeteReservationBDEF(char* Fichier, int heure){
 
     alarm(30);
 
-    rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
-    if (rc == -1) {
-        if (errno == EINTR && IsSigAlarm == 1) {
-        	IsSigAlarm = 0;
-        	return RequeteReservationBDEF(Fichier, heure);
-        }
+    for(;;){
+	    rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+	    if (rc == -1) {
+	        if (errno == EINTR && IsSigAlarm == 1) {
+	        	IsSigAlarm = 0;
+	        	return RequeteReservationBDEF(Fichier, heure);
+	        }
 
-        perror("ReceiveDatagram");
-        return -1;
-    } else {
-        fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
-        if (notreRequetePerso.NumeroTicket > 0) {
-            ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
-            NumTransac++;
-        }
+	        perror("ReceiveDatagram");
+	        return -1;
+	    } else {
+	        if (NumTransac!=notreRequetePerso.NumTransac)
+	        {
+	        	continue;
+	        }
+	        fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
+	        if (notreRequetePerso.NumeroTicket > 0) {
+	            ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
+	            NumTransac++;
+	        }
 
-        return notreRequetePerso.NumeroTicket;
-    }
+	        return notreRequetePerso.NumeroTicket;
+	    }
+	}
 }
+
 
 char LocalReadChar() {
     char Tampon[80];
