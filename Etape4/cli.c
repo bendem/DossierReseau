@@ -10,13 +10,16 @@ le serveur fait de même
 #include "../physlib/physlib.h"
 #include "../Parking/parking.h"
 #include "structure.h"
+#include "../siglib/sigs.h"
+
 
 int RequeteReservationBDEF(char*);
 char LocalReadChar();
 int RecoverFichierTransactionBDEF(char* NomFichier);
-
+void HandlerSigAlarm(int NumSig);
 
 int Desc;
+int IsSigAlarm = 0;
 int NumTransac = 0;
 struct sockaddr_in psoo; /* o = origine */
 struct sockaddr_in psoc; /* s = cible */
@@ -26,6 +29,8 @@ int main(int argc, char *argv[]) {
     int res;
     char NomFichier[20];
     char c;
+
+    armerSignal(SIGALRM,HandlerSigAlarm);
 
     sprintf(NomFichier, "LogClient-%d.dat", atoi(argv[2]));
 
@@ -97,9 +102,17 @@ int RequeteReservationBDEF(char* Fichier){
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
+    alarm(30);
+
     rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
     if (rc == -1) {
+        if (errno==EINTR && IsSigAlarm==1)
+        {
+        	IsSigAlarm=0;
+        	return RequeteReservationBDEF(Fichier);
+        }
         perror("ReceiveDatagram");
+
         return -1;
     } else {
         fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
@@ -131,4 +144,8 @@ int RecoverFichierTransactionBDEF(char* NomFichier){
     fseek(fp, -sizeof(struct Transaction), SEEK_END);
     fread(&Transac, sizeof(struct Transaction), 1, fp);
     return Transac.NumTransac + 1;
+}
+
+void HandlerSigAlarm(int NumSig){
+	IsSigAlarm=1;
 }
