@@ -238,7 +238,7 @@ long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
 int existsTransaction(char *nomFichier, int ip, int port, int numTransac, enum Action type) {
     struct Transaction transac;
     FILE *fp = fopen(nomFichier, "r");
-    fseek(fp, sizeof(struct Transaction), SEEK_END);
+    fseek(fp, -sizeof(struct Transaction), SEEK_END);
     while(fread(&transac, sizeof(struct Transaction), 1, fp)) {
         if(transac.IP == ip && transac.Port == port && transac.UneAction == type) {
             if(transac.NumTransac == numTransac) {
@@ -248,7 +248,7 @@ int existsTransaction(char *nomFichier, int ip, int port, int numTransac, enum A
                 return 0;
             }
         }
-        fseek(fp, -sizeof(struct Transaction), SEEK_CUR);
+        fseek(fp, -sizeof(struct Transaction)*2, SEEK_CUR);
     }
 
     return 0;
