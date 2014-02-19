@@ -146,7 +146,7 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
 
     // En cas d'erreur lors de la recherche
     if(offset < 1) {
-        return offset ? offset : -1;
+        return offset; // TODO FIXME plz
     }
 
     // Si tout est trop cool
@@ -167,7 +167,7 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
     fclose(fp);
 
-    return 0;
+    return NumTicket;
 }
 
 int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
@@ -176,7 +176,7 @@ int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, in
     long offset = RechercheOffsetTicket(NumTicket, PAIEMENT, Nom);
 
     if(offset < 1) {
-        return offset ? offset : -1;
+        return offset;
     }
 
     fp = fopen(Nom, "r+");
@@ -204,9 +204,19 @@ int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, in
     fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
     fclose(fp);
 
-    return 0;
+    return NumTicket;
 }
 
+/**
+ * Récupère l'offset d'un ticket en fonction de son numéro et de son type
+ * @param  NumTicket Numéro du ticket cherché
+ * @param  Type      Type du ticket cherché
+ * @param  Nom       Nom du fichier où chercher
+ * @return Si le ticket est trouvé : offset du ticket dans le fichier
+ *         Si ticket non trouvé : 0
+ *         Si erreur d'ouverture du fichier : -1
+ *         Si type suivant déjà effectué : -2
+ */
 long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
     struct Transaction  UneTransaction;
     FILE *fp = fopen(Nom, "r+");
@@ -268,6 +278,16 @@ int GetTimeBDEF() {
     char tampon[80];
 
     printf("Quelle heure est-il? ");
+    fgets(tampon, sizeof tampon, stdin);
+    tampon[5] = 0;
+
+    return atoi(tampon);
+}
+
+int GetNumTicketBDEF() {
+    char tampon[80];
+
+    printf("Quel est votre numero de ticket? ");
     fgets(tampon, sizeof tampon, stdin);
     tampon[5] = 0;
 

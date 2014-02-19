@@ -1,6 +1,6 @@
 LIBS = ../tcplib/tcplib.o ../Parking/parking.o
 
-all:    admin cli ser
+all:    admin cli ser pay
 
 ../Parking/parking.o: ../Parking/parking.c ../Parking/parking.h
 	echo "Compilation de $@"
@@ -29,6 +29,10 @@ tcplib.o: ../tcplib/tcplib.c ../tcplib/tcplib.h
 cli: cli.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o
 	echo "Compilation de client"
 	cc  -o cli  $^
+
+pay: pay.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o
+	echo "Compilation de pay"
+	cc  -o pay  $^
 
 ser: ser.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o
 	echo "Compilation de serveur"

@@ -28,3 +28,4 @@ int RechercheTicketTransaction(char *Nom, int IP, int Port, int NumTransac, enum
 long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom);
 int existsTransaction(char*, int, int, int, enum Action);
 int GetTimeBDEF();
+int GetNumTicketBDEF();
