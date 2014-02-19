@@ -102,7 +102,7 @@ int creer_socket(int type, u_long *ai, u_short port, struct sockaddr_in *pin)
 
 
   /*--- Creation de la socket ---------------------------*/
-  if ((desc = socket(AF_INET, type, 0)) == -1){
+  if ((desc = socket(AF_INET, type, 0)) == -1) {
 	perror("Creation de socket impossible");
 	return -1; }
   /*--- Preparation de l'adresse d'attachement -------- */

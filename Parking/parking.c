@@ -1,6 +1,6 @@
 #include "parking.h"
 
-void LocalIpv4ToS(int ip, char *str){
+void LocalIpv4ToS(int ip, char *str) {
     int NM[4];
     if (ip==0) {
         strcpy(str, "0.0.0.0");
@@ -13,23 +13,23 @@ void LocalIpv4ToS(int ip, char *str){
     }
 }
 
-void MonPrintf(char* tempo, int espace, int taille){
+void MonPrintf(char* tempo, int espace, int taille) {
     int Count;
     printf("%s", tempo);
     Count = espace-taille;
-    while (Count>0){
+    while (Count>0) {
         printf(" ");
         Count--;
     }
 }
 
-int CreationFichierTransaction(char *Nom, int nombreplaces){
+int CreationFichierTransaction(char *Nom, int nombreplaces) {
     FILE *Fichier;
     struct Transaction  UneTransaction;
     int nbr;
 
     Fichier = fopen(Nom, "w+");
-    if (Fichier == NULL){
+    if (Fichier == NULL) {
         fprintf(stderr, "Echec Ouverture\n");
         return(-1);
     } else {
@@ -39,7 +39,7 @@ int CreationFichierTransaction(char *Nom, int nombreplaces){
     fseek(Fichier, 0, SEEK_END);
     nbr = ftell(Fichier);
     fprintf(stderr, "Position dans le fichier %d\n", nbr);
-    if (nbr>0){
+    if (nbr>0) {
         fprintf(stderr, "Fichier non vide \n");
         return(-1);
     }
@@ -51,7 +51,7 @@ int CreationFichierTransaction(char *Nom, int nombreplaces){
     UneTransaction.NumTicket=0;
     UneTransaction.UneAction=ENTETE;
     nbr = fwrite(&UneTransaction, sizeof(struct Transaction), 1, Fichier);
-    if (!nbr){
+    if (!nbr) {
        fprintf(stderr, "Erreur Ecriture fichier \n");
        return(-1);
     }
@@ -59,7 +59,7 @@ int CreationFichierTransaction(char *Nom, int nombreplaces){
     return(1);
 }
 
-int AffichageFichier(char *Nom){
+int AffichageFichier(char *Nom) {
     FILE *Fichier;
     int nbr;
     struct Transaction  UneTransaction;
@@ -67,7 +67,7 @@ int AffichageFichier(char *Nom){
     char *PS;
 
     Fichier = fopen(Nom, "r");
-    if (Fichier == NULL){
+    if (Fichier == NULL) {
         fprintf(stderr, "Echec Ouverture\n");
         return(-1);
     }
@@ -83,7 +83,7 @@ int AffichageFichier(char *Nom){
     printf("\tAction\n");
     nbr = fread(&UneTransaction, sizeof(struct Transaction), 1, Fichier);
 
-    while(!feof(Fichier)){
+    while(!feof(Fichier)) {
         char IPDD[40];
 
         LocalIpv4ToS(UneTransaction.IP, IPDD);  MonPrintf(IPDD, 20, strlen(IPDD));

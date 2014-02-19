@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-int RequeteReservationBDEF(char* Fichier, int heure){
+int RequeteReservationBDEF(char* Fichier, int heure) {
     struct RequeteBDEF notreRequetePerso;
     int rc;
 
@@ -101,9 +101,9 @@ int RequeteReservationBDEF(char* Fichier, int heure){
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    alarm(30);
+    alarm(10);
 
-    for(;;){
+    for(;;) {
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             if (errno == EINTR && IsSigAlarm == 1) {
@@ -135,13 +135,13 @@ char LocalReadChar() {
     return Tampon[0];
 }
 
-int RecoverFichierTransactionBDEF(char* NomFichier){
+int RecoverFichierTransactionBDEF(char* NomFichier) {
     FILE* fp;
     struct Transaction Transac;
 
     fp = fopen(NomFichier, "r");
 
-    if(fp == NULL){
+    if(fp == NULL) {
         return 0;
     }
 
@@ -150,6 +150,6 @@ int RecoverFichierTransactionBDEF(char* NomFichier){
     return Transac.NumTransac + 1;
 }
 
-void HandlerSigAlarm(int sig){
+void HandlerSigAlarm(int sig) {
     IsSigAlarm = 1;
 }

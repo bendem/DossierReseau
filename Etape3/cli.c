@@ -36,9 +36,9 @@ int main(int argc, char *argv[]) {
         CreationFichierTransaction(NomFichier, 50);
     }
 
-    memset(&psoo, 0, sizeof(struct sockaddr_in));
-    memset(&psoc, 0, sizeof(struct sockaddr_in));
-    memset(&psor, 0, sizeof(struct sockaddr_in));
+    // memset(&psoo, 0, sizeof(struct sockaddr_in));
+    // memset(&psoc, 0, sizeof(struct sockaddr_in));
+    // memset(&psor, 0, sizeof(struct sockaddr_in));
 
     if (argc != 5) {
         printf("cli client portc serveur ports\n");
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-int RequeteReservationBDEF(char* Fichier){
+int RequeteReservationBDEF(char* Fichier) {
 
     struct RequeteBDEF notreRequetePerso;
     int rc;
@@ -118,13 +118,13 @@ char LocalReadChar() {
     return Tampon[0];
 }
 
-int RecoverFichierTransactionBDEF(char* NomFichier){
+int RecoverFichierTransactionBDEF(char* NomFichier) {
     FILE* fp;
     struct Transaction Transac;
 
     fp = fopen(NomFichier, "r");
 
-    if(fp == NULL){
+    if(fp == NULL) {
         return 0;
     }
 
