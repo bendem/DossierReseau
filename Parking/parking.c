@@ -249,7 +249,9 @@ int existsTransaction(char *nomFichier, int ip, int port, int numTransac, enum A
     struct Transaction transac;
     FILE *fp = fopen(nomFichier, "r");
     fseek(fp, -sizeof(struct Transaction), SEEK_END);
-    while(fread(&transac, sizeof(struct Transaction), 1, fp)) {
+    while(ftell(fp) > sizeof(struct Transaction)) {
+        fread(&transac, sizeof(struct Transaction), 1, fp);
+        printf("oy---\n");
         if(transac.IP == ip && transac.Port == port && transac.UneAction == type) {
             if(transac.NumTransac == numTransac) {
                 return transac.NumTicket;

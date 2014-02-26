@@ -30,7 +30,12 @@ int main(int argc, char *argv[]) {
     char NomFichier[20];
     char c;
 
-    armerSignal(SIGALRM,HandlerSigAlarm);
+    if (argc != 5) {
+        printf("Usage : ./cli ip_client port_port ip_server port_server\n");
+        exit(1);
+    }
+
+    armerSignal(SIGALRM, HandlerSigAlarm);
 
     sprintf(NomFichier, "LogClient-%d.dat", atoi(argv[2]));
 
@@ -44,11 +49,6 @@ int main(int argc, char *argv[]) {
     memset(&psoo, 0, sizeof(struct sockaddr_in));
     memset(&psoc, 0, sizeof(struct sockaddr_in));
     memset(&psor, 0, sizeof(struct sockaddr_in));
-
-    if (argc != 5) {
-        printf("Usage : ./cli ip_client port_port ip_server port_server\n");
-        exit(1);
-    }
     Desc = CreateSockets(&psoo, &psoc, argv[1], atoi(argv[2]), argv[3], atoi(argv[4]));
     if (Desc == -1) {
         perror("CreateSockets:");
@@ -101,25 +101,31 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    alarm(30);
+    alarm(10);
 
-    rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
-    if (rc == -1) {
-        if (errno == EINTR && IsSigAlarm == 1) {
-        	IsSigAlarm = 0;
-        	return RequeteReservationBDEF(Fichier, heure);
+    for(;;) {
+        rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+        if (rc == -1) {
+            if (errno == EINTR && IsSigAlarm == 1) {
+                IsSigAlarm = 0;
+                return RequeteReservationBDEF(Fichier, heure);
+            }
+
+            perror("ReceiveDatagram");
+            return -1;
+        } else {
+            if (NumTransac != notreRequetePerso.NumTransac) {
+                printf("Doublon!\n");
+                continue;
+            }
+            fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
+            if (notreRequetePerso.NumeroTicket > 0) {
+                ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
+                NumTransac++;
+            }
+
+            return notreRequetePerso.NumeroTicket;
         }
-
-        perror("ReceiveDatagram");
-        return -1;
-    } else {
-        fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
-        if (notreRequetePerso.NumeroTicket > 0) {
-            ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
-            NumTransac++;
-        }
-
-        return notreRequetePerso.NumeroTicket;
     }
 }
 
