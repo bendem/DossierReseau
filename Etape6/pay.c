@@ -131,6 +131,7 @@ int RequetePaiementBDEF(char* Fichier, int heure) {
             PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
             NumTransac++;
         }
+        alarm(0);
 
         return req.NumeroTicket;
     }

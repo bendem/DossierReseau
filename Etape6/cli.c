@@ -122,6 +122,7 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
                 ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
                 NumTransac++;
             }
+            alarm(0);
 
             return notreRequetePerso.NumeroTicket;
         }
