@@ -101,7 +101,7 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    alarm(10);
+    alarm(7);
 
     for(;;) {
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
@@ -114,7 +114,7 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
             perror("ReceiveDatagram");
             return -1;
         } else {
-            if (NumTransac!=notreRequetePerso.NumTransac) {
+            if (NumTransac != notreRequetePerso.NumTransac) {
                 continue;
             }
             fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
@@ -122,6 +122,7 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
                 ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
                 NumTransac++;
             }
+            alarm(0);
 
             return notreRequetePerso.NumeroTicket;
         }
