@@ -30,12 +30,12 @@ int main(int argc, char *argv[]) {
     char NomFichier[20];
     char c;
 
-    armerSignal(SIGALRM,HandlerSigAlarm);
-
     if (argc != 5) {
         printf("Usage : ./pay ip_pay port_pay ip_server port_server\n");
         exit(1);
     }
+
+    armerSignal(SIGALRM,HandlerSigAlarm);
 
     sprintf(NomFichier, "LogPay-%d.dat", atoi(argv[2]));
 
@@ -45,10 +45,6 @@ int main(int argc, char *argv[]) {
     if (NumTransac == 0) {
         CreationFichierTransaction(NomFichier, 50);
     }
-
-    // memset(&psoo, 0, sizeof(struct sockaddr_in));
-    // memset(&psoc, 0, sizeof(struct sockaddr_in));
-    // memset(&psor, 0, sizeof(struct sockaddr_in));
 
     Desc = CreateSockets(&psoo, &psoc, argv[1], atoi(argv[2]), argv[3], atoi(argv[4]));
     if (Desc == -1) {
