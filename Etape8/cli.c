@@ -9,8 +9,9 @@ le serveur fait de même
 #include <string.h>
 #include "../physlib/physlib.h"
 #include "../Parking/parking.h"
-#include "structure.h"
 #include "../siglib/sigs.h"
+#include "structure.h"
+#include "crc.h"
 
 
 int  RequeteReservationBDEF(char*, int);
@@ -89,6 +90,9 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
     notreRequetePerso.Action = RESERVATION;
     notreRequetePerso.NumTransac = NumTransac;
     notreRequetePerso.Heure = heure;
+    notreRequetePerso.CRC = 0;
+    notreRequetePerso.CRC = cksum(&req, sizeof(req));
+    printf("CRC: %u, cksum: %d\n", notreRequetePerso.CRC, cksum(&notreRequetePerso, sizeof(notreRequetePerso)));
 
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
 

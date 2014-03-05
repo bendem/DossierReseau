@@ -48,6 +48,10 @@ int main(int argc, char *argv[]) {
         } else {
             fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
         }
+        printf("CRC: %u, cksum: %d\n", notreRequetePerso.CRC, cksum(&notreRequetePerso, sizeof(notreRequetePerso)));
+        if(cksum(&notreRequetePerso, sizeof(notreRequetePerso)) != 0) {
+            continue;
+        }
 
         if(notreRequetePerso.Action == PAIEMENT && notreRequetePerso.Type == Question) {
             notreRequetePerso.Heure = processDatagramBDEF(notreRequetePerso, psor);

@@ -12,4 +12,5 @@ struct RequeteBDEF {
     int NumeroTicket;
     int Heure;
     enum Action Action;
+    short CRC;
 };

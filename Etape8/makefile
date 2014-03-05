@@ -26,7 +26,11 @@ tcplib.o: ../tcplib/tcplib.c ../tcplib/tcplib.h
 	echo "Compilation de tcplib.o"
 	cc -c $<
 
-BorneE: cli.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o
+crc.o: crc.c crc.h
+	echo "Compilation de $@"
+	cc -c $<
+
+BorneE: cli.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o crc.o
 	echo "Compilation de BorneE"
 	cc  -o BorneE $^
 
@@ -38,6 +42,6 @@ BorneS: sortie.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o
 	echo "Compilation de BorneS"
 	cc  -o BorneS $^
 
-ser: ser.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o
+ser: ser.c physlib.o tcplib.o ../Parking/parking.o ../siglib/sigs.o crc.o
 	echo "Compilation de serveur"
 	cc -o ser $^
