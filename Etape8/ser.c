@@ -48,8 +48,8 @@ int main(int argc, char *argv[]) {
         } else {
             fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
         }
-        printf("CRC: %u, cksum: %d\n", notreRequetePerso.CRC, cksum(&notreRequetePerso, sizeof(notreRequetePerso)));
-        if(cksum(&notreRequetePerso, sizeof(notreRequetePerso)) != 0) {
+        printf("CRC: %u, cksum: %u\n", notreRequetePerso.CRC, cksum(&notreRequetePerso, sizeof(notreRequetePerso)));
+        if(cksum(&notreRequetePerso, sizeof(notreRequetePerso)) != 0 && notreRequetePerso.Action == RESERVATION) {
             continue;
         }
 
