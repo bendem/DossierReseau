@@ -231,7 +231,7 @@ long RechercheOffsetTicketBDEF(int NumTicket, enum Action Type, char *Nom) {
     while (fread(&UneTransaction, sizeof(struct Transaction), 1, fp)) {
         if(UneTransaction.NumTicket == NumTicket) {
             if(UneTransaction.UneAction == Type) {
-                ticketFound = ftell(fp);
+                ticketFound = ftell(fp) - sizeof(struct Transaction);
             }
             // Si le ticket est déjà payé ou que la voiture est déjà sortie...
             if(UneTransaction.UneAction > Type) {

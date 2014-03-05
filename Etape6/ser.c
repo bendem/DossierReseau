@@ -84,7 +84,7 @@ int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
                 );
             case PAIEMENT:
                 if(data.Type == Question) {
-                    return GetTicketTimeBDEF(NOMDEFICHIER, data.NumeroTicket, data.Action);
+                    return GetTicketTimeBDEF(NOMDEFICHIER, data.NumeroTicket, RESERVATION);
                 } else {
                     return PaiementTicketBDEF(
                         NOMDEFICHIER,

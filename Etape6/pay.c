@@ -129,8 +129,8 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
         return -1;
     } else {
         alarm(0);
-        fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
-        if (req.NumeroTicket > 0) {
+        fprintf(stderr, "bytes:%d:%dh\n", rc, req.Heure);
+        if (req.Heure > 0) {
             cout = CalculCoutBDEF(req.Heure, heure);
             printf("Confirmez-vous le paiement de %.2f ?\n", cout);
             c = LocalReadChar();
@@ -141,7 +141,7 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
             }
         }
 
-        return req.NumeroTicket;
+        return req.Heure;
     }
 }
 
