@@ -69,41 +69,38 @@ int main(int argc, char *argv[]) {
 }
 
 int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
-    if(data.Type == Question) {
-        switch(data.Action) {
-            case ENTETE:
-                return -15;
-            case RESERVATION:
-                return ReservationTicketBDEF(
-                    NOMDEFICHIER,
-                    ntohl(psor.sin_addr.s_addr),
-                    ntohs(psor.sin_port),
-                    data.NumTransac,
-                    data.Heure,
-                    NULL
-                );
-            case PAIEMENT:
-                if(data.Type == Question) {
-                    return GetTicketTimeBDEF(NOMDEFICHIER, data.NumeroTicket, RESERVATION);
-                } else {
-                    return PaiementTicketBDEF(
-                        NOMDEFICHIER,
-                        ntohl(psor.sin_addr.s_addr),
-                        ntohs(psor.sin_port),
-                        data.NumTransac,
-                        data.Heure,
-                        data.NumeroTicket
-                    );
-                }
-            case SORTIE:
-                return SortieParkingBDEF(
-                    NOMDEFICHIER,
-                    ntohl(psor.sin_addr.s_addr),
-                    ntohs(psor.sin_port),
-                    data.NumTransac,
-                    data.Heure,
-                    data.NumeroTicket
-                );
-        }
+    switch(data.Action) {
+        case ENTETE:
+            return -15;
+        case RESERVATION:
+            return ReservationTicketBDEF(
+                NOMDEFICHIER,
+                ntohl(psor.sin_addr.s_addr),
+                ntohs(psor.sin_port),
+                data.NumTransac,
+                data.Heure,
+                NULL
+            );
+        case PAIEMENT:
+            if(data.Type == Question) {
+                return GetTicketTimeBDEF(NOMDEFICHIER, data.NumeroTicket, RESERVATION);
+            }
+            return PaiementTicketBDEF(
+                NOMDEFICHIER,
+                ntohl(psor.sin_addr.s_addr),
+                ntohs(psor.sin_port),
+                data.NumTransac,
+                data.Heure,
+                data.NumeroTicket
+            );
+        case SORTIE:
+            return SortieParkingBDEF(
+                NOMDEFICHIER,
+                ntohl(psor.sin_addr.s_addr),
+                ntohs(psor.sin_port),
+                data.NumTransac,
+                data.Heure,
+                data.NumeroTicket
+            );
     }
 }

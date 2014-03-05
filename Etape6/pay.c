@@ -140,7 +140,7 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
                 return -3;
             }
         }
-
+        // En cas d'erreur, on retourne le code en question
         return req.Heure;
     }
 }
@@ -169,16 +169,17 @@ int RequetePaiementBDEF(char *Fichier, int NumTicket, int Heure) {
             IsSigAlarm = 0;
             return RequetePaiementBDEF(Fichier, NumTicket, Heure);
         }
-
         perror("ReceiveDatagram");
         return -1;
-    } else {
-        alarm(0);
-        fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
-        if (req.NumeroTicket > 0) {
-            PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
-            ++NumTransac;
-        }
+    }
+
+    alarm(0);
+    fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
+    if (req.NumeroTicket > 0) {
+        // Ceci ne marche pas vu que la fonction cherche pour une transaction de type RESERVATION
+        // et qu'il n'y en a pas dans ce fichier si...
+        PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
+        ++NumTransac;
     }
     return req.NumeroTicket;
 
