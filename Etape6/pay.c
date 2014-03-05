@@ -13,7 +13,8 @@ le serveur fait de même
 #include "../siglib/sigs.h"
 
 
-int   RequetePaiementBDEF(char*, int);
+int   RequeteCoutBDEF(char*, int);
+int   RequetePaiementBDEF(char*, int, int);
 char  LocalReadChar();
 int   RecoverFichierTransactionBDEF(char*);
 void  HandlerSigAlarm(int);
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]) {
         c = LocalReadChar();
         switch(c) {
             case '1':
-                res = RequetePaiementBDEF(NomFichier, GetTimeBDEF());
+                res = RequeteCoutBDEF(NomFichier, GetTimeBDEF());
                 if(res > 0) {
                     printf("Vous avez bien paye le ticket `%d'.\n", res);
                 } else {
@@ -94,7 +95,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-int RequetePaiementBDEF(char* Fichier, int heure) {
+int RequeteCoutBDEF(char* Fichier, int heure) {
     struct RequeteBDEF req;
     int rc;
     float cout;
@@ -120,7 +121,7 @@ int RequetePaiementBDEF(char* Fichier, int heure) {
     if (rc == -1) {
         if (errno == EINTR && IsSigAlarm == 1) {
             IsSigAlarm = 0;
-            return RequetePaiementBDEF(Fichier, heure);
+            return RequeteCoutBDEF(Fichier, heure);
         }
 
         perror("ReceiveDatagram");
@@ -132,15 +133,52 @@ int RequetePaiementBDEF(char* Fichier, int heure) {
             printf("Confirmez-vous le paiement de %.2f ?\n", cout);
             c = LocalReadChar();
             if (c == 'O' || c == 'o') {
-                //Paiement du ticket
-                PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
-                ++NumTransac;
+                RequetePaiementBDEF(Fichier, req.NumeroTicket, heure);
             }
         }
         alarm(0);
 
         return req.NumeroTicket;
     }
+}
+
+int RequetePaiementBDEF(char* Fichier, int NumTicket, int Heure) {
+    struct RequeteBDEF req;
+    int rc;
+
+    req.NumeroTicket=NumTicket;
+    req.Type = Reponse;
+    req.Action = PAIEMENT;
+    req.NumTransac = NumTransac;
+
+    rc = SendDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psoc);
+    if (rc == -1) {
+        perror("SendDatagram error");
+    } else {
+        fprintf(stderr, "Envoi de %d bytes\n", rc);
+    }
+
+    alarm(30);
+
+    rc = ReceiveDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psor);
+    if (rc == -1) {
+        if (errno == EINTR && IsSigAlarm == 1) {
+            IsSigAlarm = 0;
+            return RequetePaiementBDEF(Fichier, NumTicket, Heure);
+        }
+
+        perror("ReceiveDatagram");
+        return -1;
+    } else {
+        fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
+        if (req.NumeroTicket > 0) {
+            PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
+            ++NumTransac;
+        }
+    }
+    alarm(0);
+    return req.NumeroTicket;
+
 }
 
 char LocalReadChar() {
