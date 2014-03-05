@@ -13,11 +13,12 @@ le serveur fait de même
 #include "../siglib/sigs.h"
 
 
-int  RequetePaiementBDEF(char*, int);
-char LocalReadChar();
-int  RecoverFichierTransactionBDEF(char*);
-void HandlerSigAlarm(int);
-float CalculCoutBDEF(int heureEntree, int heurePaiement);
+int   RequetePaiementBDEF(char*, int);
+char  LocalReadChar();
+int   RecoverFichierTransactionBDEF(char*);
+void  HandlerSigAlarm(int);
+float CalculCoutBDEF(int, int);
+int   TimeToMinutesBDEF(int);
 
 
 int Desc;
@@ -127,14 +128,14 @@ int RequetePaiementBDEF(char* Fichier, int heure) {
     } else {
         fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
         if (req.NumeroTicket > 0) {
-        	cout=CalculCoutBDEF(req.Heure,heure);
-        	printf("Confirmez-vous le paiement de %.2f ?\n",cout);
-        	c = LocalReadChar();
-        	if (c=='O' || c=='o') {
-        		//Paiement du ticket
-        		PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
-            	NumTransac++;
-        	}
+            cout = CalculCoutBDEF(req.Heure, heure);
+            printf("Confirmez-vous le paiement de %.2f ?\n", cout);
+            c = LocalReadChar();
+            if (c == 'O' || c == 'o') {
+                //Paiement du ticket
+                PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
+                ++NumTransac;
+            }
         }
         alarm(0);
 
@@ -168,12 +169,12 @@ void HandlerSigAlarm(int sig) {
 }
 
 float CalculCoutBDEF(int heureEntree, int heurePaiement) {
-	int duree;
-	float cout;
+    // 1 Est à changer pour changer le prix par minute...
+    return 1 * (TimeToMinutesBDEF(heurePaiement) - TimeToMinutesBDEF(heureEntree));
+}
 
-	duree=((heurePaiement/100)*60+(heurePaiement-(heurePaiement/100)*100)-(heureEntree/100)*60+(heureEntree-(heureEntree/100)*100));
-
-	cout=1*duree;
-
-	return cout;
+int TimeToMinutesBDEF(int t) {
+    int hours = t / 100;
+    int minutes = t - hours * 100;
+    return hours * 60 + minutes;
 }
