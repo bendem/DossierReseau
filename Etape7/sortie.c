@@ -89,6 +89,7 @@ int RequeteSortieBDEF(char* Fichier, int heure) {
     notreRequetePerso.Action = SORTIE;
     notreRequetePerso.NumTransac = NumTransac;
     notreRequetePerso.Heure = heure;
+    notreRequetePerso.NumeroTicket = GetNumTicketBDEF();
 
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
 
@@ -116,7 +117,7 @@ int RequeteSortieBDEF(char* Fichier, int heure) {
             }
             fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
             if (notreRequetePerso.NumeroTicket > 0) {
-                SortieTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
+                SortieParkingBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, notreRequetePerso.NumeroTicket);
                 NumTransac++;
             }
             alarm(0);
