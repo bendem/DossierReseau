@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
         }
 
-        if(data.Action == PAIEMENT && data.Type == Question) {
+        if(notreRequetePerso.Action == PAIEMENT && notreRequetePerso.Type == Question) {
             notreRequetePerso.Heure = processDatagramBDEF(notreRequetePerso, psor);
         } else {
             notreRequetePerso.NumeroTicket = processDatagramBDEF(notreRequetePerso, psor);
@@ -87,7 +87,7 @@ int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
                 );
             case PAIEMENT:
                 if(data.Type == Question) {
-                    return GetTicketTimeBDEF(NOMDEFICHIER, data.NumeroTicket, data.Action)
+                    return GetTicketTimeBDEF(NOMDEFICHIER, data.NumeroTicket, data.Action);
                 } else {
                     return PaiementTicketBDEF(
                         NOMDEFICHIER,

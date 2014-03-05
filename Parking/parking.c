@@ -251,7 +251,7 @@ int GetTicketTimeBDEF(char *File, int NumTicket, enum Action Type) {
         return offset;
     }
 
-    fp = fopen(Nom, "r+");
+    FILE *fp = fopen(File, "r+");
     if(fp == NULL) {
         perror("Erreur d'ouverture de fichier");
         return -1;
