@@ -17,6 +17,8 @@ int  RequetePaiementBDEF(char*, int);
 char LocalReadChar();
 int  RecoverFichierTransactionBDEF(char*);
 void HandlerSigAlarm(int);
+float CalculCoutBDEF(int heureEntree, int heurePaiement);
+
 
 int Desc;
 int IsSigAlarm = 0;
@@ -94,11 +96,12 @@ int main(int argc, char *argv[]) {
 int RequetePaiementBDEF(char* Fichier, int heure) {
     struct RequeteBDEF req;
     int rc;
+    float cout;
+    char c;
 
     req.Type = Question;
     req.Action = PAIEMENT;
     req.NumTransac = NumTransac;
-    req.Heure = heure;
 
     req.NumeroTicket = GetNumTicketBDEF();
 
@@ -124,8 +127,14 @@ int RequetePaiementBDEF(char* Fichier, int heure) {
     } else {
         fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
         if (req.NumeroTicket > 0) {
-            PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
-            NumTransac++;
+        	cout=CalculCoutBDEF(req.Heure,heure);
+        	printf("Confirmez-vous le paiement de %.2f ?\n",cout);
+        	c = LocalReadChar();
+        	if (c=='O' || c=='o') {
+        		//Paiement du ticket
+        		PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
+            	NumTransac++;
+        	}
         }
         alarm(0);
 
@@ -156,4 +165,15 @@ int RecoverFichierTransactionBDEF(char* NomFichier) {
 
 void HandlerSigAlarm(int sig) {
     IsSigAlarm = 1;
+}
+
+float CalculCoutBDEF(int heureEntree, int heurePaiement) {
+	int duree;
+	float cout;
+
+	duree=((heurePaiement/100)*60+(heurePaiement-(heurePaiement/100)*100)-(heureEntree/100)*60+(heureEntree-(heureEntree/100)*100));
+
+	cout=1*duree;
+
+	return cout;
 }
