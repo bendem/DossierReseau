@@ -91,7 +91,7 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
     notreRequetePerso.NumTransac = NumTransac;
     notreRequetePerso.Heure = heure;
     notreRequetePerso.CRC = 0;
-    notreRequetePerso.CRC = cksum(&req, sizeof(req));
+    notreRequetePerso.CRC = cksum(&notreRequetePerso, sizeof(notreRequetePerso));
     printf("CRC: %u, cksum: %d\n", notreRequetePerso.CRC, cksum(&notreRequetePerso, sizeof(notreRequetePerso)));
 
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
