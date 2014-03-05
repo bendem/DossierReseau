@@ -153,6 +153,7 @@ int RequetePaiementBDEF(char *Fichier, int NumTicket, int Heure) {
     req.Type = Reponse;
     req.Action = PAIEMENT;
     req.NumTransac = NumTransac;
+    req.Heure = Heure;
 
     rc = SendDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psoc);
     if (rc == -1) {
