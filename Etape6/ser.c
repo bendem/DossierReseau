@@ -52,7 +52,11 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.Action);
         }
 
-        notreRequetePerso.NumeroTicket = processDatagramBDEF(notreRequetePerso, psor);
+        if(data.Action == PAIEMENT && data.Type == Question) {
+            notreRequetePerso.Heure = processDatagramBDEF(notreRequetePerso, psor);
+        } else {
+            notreRequetePerso.NumeroTicket = processDatagramBDEF(notreRequetePerso, psor);
+        }
         notreRequetePerso.Type = Reponse;
 
         /* reponse avec psoc */
@@ -82,14 +86,18 @@ int processDatagramBDEF(struct RequeteBDEF data, struct sockaddr_in psor) {
                     NULL
                 );
             case PAIEMENT:
-                return PaiementTicketBDEF(
-                    NOMDEFICHIER,
-                    ntohl(psor.sin_addr.s_addr),
-                    ntohs(psor.sin_port),
-                    data.NumTransac,
-                    data.Heure,
-                    data.NumeroTicket
-                );
+                if(data.Type == Question) {
+                    return GetTicketTimeBDEF(NOMDEFICHIER, data.NumeroTicket, data.Action)
+                } else {
+                    return PaiementTicketBDEF(
+                        NOMDEFICHIER,
+                        ntohl(psor.sin_addr.s_addr),
+                        ntohs(psor.sin_port),
+                        data.NumTransac,
+                        data.Heure,
+                        data.NumeroTicket
+                    );
+                }
             case SORTIE:
                 return SortieParkingBDEF(
                     NOMDEFICHIER,
