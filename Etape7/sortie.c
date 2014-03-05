@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
                 if(res > 0) {
                     printf("Cya, votre ticket portait le numero %d.\n", res);
                 } else {
-                    printf("Il y a eu une erreur lors de la reservation de votre ticket...\n");
+                    printf("Il y a eu une erreur lors de la sortie de votre ticket...\n");
                 }
                 break;
             case '2':
@@ -116,7 +116,7 @@ int RequeteSortieBDEF(char* Fichier, int heure) {
             }
             fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
             if (notreRequetePerso.NumeroTicket > 0) {
-                ReservationTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
+                SortieTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, NULL);
                 NumTransac++;
             }
             alarm(0);
