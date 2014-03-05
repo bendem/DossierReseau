@@ -78,6 +78,9 @@ int main(int argc, char *argv[]) {
                         case -2:
                             printf("Ticket deja paye...\n");
                             break;
+                        case -3:
+                            printf("Pourquoi tu veux pas payer?? :'(\n");
+                            break;
                         default:
                             printf("Erreur generique...\n");
 
@@ -133,6 +136,8 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
             c = LocalReadChar();
             if (c == 'O' || c == 'o') {
                 return RequetePaiementBDEF(Fichier, req.NumeroTicket, heure);
+            } else {
+                return -3;
             }
         }
 
@@ -140,11 +145,11 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
     }
 }
 
-int RequetePaiementBDEF(char* Fichier, int NumTicket, int Heure) {
+int RequetePaiementBDEF(char *Fichier, int NumTicket, int Heure) {
     struct RequeteBDEF req;
     int rc;
 
-    req.NumeroTicket=NumTicket;
+    req.NumeroTicket = NumTicket;
     req.Type = Reponse;
     req.Action = PAIEMENT;
     req.NumTransac = NumTransac;

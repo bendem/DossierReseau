@@ -26,9 +26,6 @@ int main(int argc, char *argv[]) {
 
     struct RequeteBDEF notreRequetePerso;
 
-    // memset(&psoo, 0, sizeof(struct sockaddr_in));
-    // memset(&psor, 0, sizeof(struct sockaddr_in));
-
     printf("Ceci est le serveur\n");
     if (argc != 3) {
         printf("Usage de la commande : ./ser ip_server port_server\n");
@@ -43,8 +40,8 @@ int main(int argc, char *argv[]) {
     }
 
     for (;;) {
-        printf("---> Pause, appuyer sur <enter> pour continuer <---\n");
-        getchar();
+        // printf("---> Pause, appuyer sur <enter> pour continuer <---\n");
+        // getchar();
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("ReceiveDatagram");
