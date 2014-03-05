@@ -108,7 +108,7 @@ int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure
     }
 
     // Transaction déjà effectuée?
-    numTicket = existsTransaction(Nom, IP, Port, NumTransac, RESERVATION);
+    numTicket = existsTransactionBDEF(Nom, IP, Port, NumTransac, RESERVATION);
     if(numTicket) {
         printf("Transaction deja existante, renvoi du numero de ticket\n");
         return numTicket;
@@ -141,7 +141,7 @@ int ReservationTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure
 
 int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
     struct Transaction  UneTransaction;
-    long offset = RechercheOffsetTicket(NumTicket, RESERVATION, Nom);
+    long offset = RechercheOffsetTicketBDEF(NumTicket, RESERVATION, Nom);
     FILE *fp;
 
     // En cas d'erreur lors de la recherche
@@ -173,7 +173,7 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
 int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
     struct Transaction  UneTransaction;
     FILE *fp;
-    long offset = RechercheOffsetTicket(NumTicket, PAIEMENT, Nom);
+    long offset = RechercheOffsetTicketBDEF(NumTicket, PAIEMENT, Nom);
 
     if(offset < 1) {
         return offset;
@@ -217,7 +217,7 @@ int SortieParkingBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, in
  *         Si erreur d'ouverture du fichier : -1
  *         Si type suivant déjà effectué : -2
  */
-long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
+long RechercheOffsetTicketBDEF(int NumTicket, enum Action Type, char *Nom) {
     struct Transaction  UneTransaction;
     FILE *fp = fopen(Nom, "r+");
     long ticketFound = 0;
@@ -245,7 +245,27 @@ long RechercheOffsetTicket(int NumTicket, enum Action Type, char *Nom) {
     return ticketFound;
 }
 
-int existsTransaction(char *nomFichier, int ip, int port, int numTransac, enum Action type) {
+int GetTicketTimeBDEF(char *File, int NumTicket, enum Action Type) {
+    long offset = RechercheOffsetTicketBDEF(NumTicket, Type, File);
+    if(offset < 1) {
+        return offset;
+    }
+
+    fp = fopen(Nom, "r+");
+    if(fp == NULL) {
+        perror("Erreur d'ouverture de fichier");
+        return -1;
+    }
+
+    struct Transaction transac;
+
+    fseek(fp, offset, SEEK_SET);
+    fread(&transac, sizeof(struct Transaction), 1, fp);
+    fclose(fp);
+    return transac.Heure;
+}
+
+int existsTransactionBDEF(char *nomFichier, int ip, int port, int numTransac, enum Action type) {
     struct Transaction transac;
     FILE *fp = fopen(nomFichier, "r");
     fseek(fp, -sizeof(struct Transaction), SEEK_END);
