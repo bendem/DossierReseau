@@ -108,7 +108,6 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
     req.NumeroTicket = GetNumTicketBDEF();
 
     rc = SendDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psoc);
-
     if (rc == -1) {
         perror("SendDatagram error");
     } else {
@@ -116,7 +115,6 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
     }
 
     alarm(30);
-
     rc = ReceiveDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psor);
     if (rc == -1) {
         if (errno == EINTR && IsSigAlarm == 1) {
@@ -127,16 +125,16 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
         perror("ReceiveDatagram");
         return -1;
     } else {
+        alarm(0);
         fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
         if (req.NumeroTicket > 0) {
             cout = CalculCoutBDEF(req.Heure, heure);
             printf("Confirmez-vous le paiement de %.2f ?\n", cout);
             c = LocalReadChar();
             if (c == 'O' || c == 'o') {
-                RequetePaiementBDEF(Fichier, req.NumeroTicket, heure);
+                return RequetePaiementBDEF(Fichier, req.NumeroTicket, heure);
             }
         }
-        alarm(0);
 
         return req.NumeroTicket;
     }
@@ -170,13 +168,13 @@ int RequetePaiementBDEF(char* Fichier, int NumTicket, int Heure) {
         perror("ReceiveDatagram");
         return -1;
     } else {
+        alarm(0);
         fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
         if (req.NumeroTicket > 0) {
             PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
             ++NumTransac;
         }
     }
-    alarm(0);
     return req.NumeroTicket;
 
 }
