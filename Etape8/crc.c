@@ -1,3 +1,5 @@
+#include "crc.h"
+
 unsigned short cksum(void *ipt, int len) {
     /* assume 32 bit long, 16 bit short */
     long sum = 0;

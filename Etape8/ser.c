@@ -12,6 +12,7 @@ Un serveur recevant une structure et lié à un client particulier
 #include "../physlib/physlib.h"
 #include "../Parking/parking.h"
 #include "structure.h"
+#include "crc.h"
 
 #define NOMDEFICHIER "transaction.dat"
 
