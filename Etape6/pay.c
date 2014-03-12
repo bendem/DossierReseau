@@ -20,6 +20,7 @@ int   RecoverFichierTransactionBDEF(char*);
 void  HandlerSigAlarm(int);
 float CalculCoutBDEF(int, int);
 int   TimeToMinutesBDEF(int);
+int   PaiementTicketLocalBDEF(char*, int, int, int, int, int);
 
 
 int Desc;
@@ -177,9 +178,7 @@ int RequetePaiementBDEF(char *Fichier, int NumTicket, int Heure) {
     alarm(0);
     fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
     if (req.NumeroTicket > 0) {
-        // Ceci ne marche pas vu que la fonction cherche pour une transaction de type RESERVATION
-        // et qu'il n'y en a pas dans ce fichier si...
-        PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
+        PaiementTicketLocalBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
         ++NumTransac;
     }
     return req.NumeroTicket;
@@ -220,4 +219,26 @@ int TimeToMinutesBDEF(int t) {
     int hours = t / 100;
     int minutes = t - hours * 100;
     return hours * 60 + minutes;
+}
+
+
+int PaiementTicketLocalBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
+    FILE *fp;
+    fp = fopen(Nom, "a");
+    if(fp == NULL) {
+        perror("Erreur d'ouverture de fichier");
+        return -1;
+    }
+    // Paiement
+    struct Transaction  UneTransaction;
+    UneTransaction.IP = IP;
+    UneTransaction.Port = Port;
+    UneTransaction.NumTransac = NumTransac;
+    UneTransaction.Heure = Heure;
+    UneTransaction.PlacesLibres = 0;
+    UneTransaction.UneAction = PAIEMENT;
+    UneTransaction.NumTicket = NumTicket;
+    fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
+    fclose(fp);
+    return 0;
 }
