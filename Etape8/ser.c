@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
         }
         printf("CRC: %u, cksum: %u\n", notreRequetePerso.CRC, cksum(&notreRequetePerso, sizeof(notreRequetePerso)));
         if(cksum(&notreRequetePerso, sizeof(notreRequetePerso)) != 0 && notreRequetePerso.Action == RESERVATION) {
+            printf("Mauvais checksum! On l'ignore...\n");
             continue;
         }
 
