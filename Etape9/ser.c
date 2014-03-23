@@ -9,6 +9,7 @@ Un serveur recevant une structure et lié à un client particulier
 #include <stdio.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <sys/types.h>
 #include "../physlib/physlib.h"
 #include "../Parking/parking.h"
 #include "structure.h"
@@ -18,10 +19,10 @@ Un serveur recevant une structure et lié à un client particulier
 
 int processDatagramBDEF(struct RequeteBDEF, struct sockaddr_in);
 
-
 int main(int argc, char *argv[]) {
     int rc;
-    int DescE, DescP, DescS;
+    int DescE, DescP, DescS, currentDesc;
+    fd_set readfs;
     struct sockaddr_in psor; /* remote */
     struct sockaddr_in psoE; /* Entree */
     struct sockaddr_in psoP; /* Paiement */
@@ -41,13 +42,13 @@ int main(int argc, char *argv[]) {
     } else {
         printf("CreateSockets : %d \n", DescE);
     }
-    DescP = CreateSockets(&psoP, NULL, argv[1], atoi(argv[2]), NULL, 0);
+    DescP = CreateSockets(&psoP, NULL, argv[1], atoi(argv[3]), NULL, 0);
     if (DescP == -1) {
         perror("CreateSockets psoP");
     } else {
         printf("CreateSockets : %d \n", DescP);
     }
-    DescS = CreateSockets(&psoS, NULL, argv[1], atoi(argv[2]), NULL, 0);
+    DescS = CreateSockets(&psoS, NULL, argv[1], atoi(argv[4]), NULL, 0);
     if (DescS == -1) {
         perror("CreateSockets psoS");
     } else {
@@ -55,9 +56,29 @@ int main(int argc, char *argv[]) {
     }
 
     for (;;) {
+        // On veux écouter sur pls ports
+        FD_ZERO(&readfs);
+        FD_SET(DescE, &readfs);
+        FD_SET(DescP, &readfs);
+        FD_SET(DescS, &readfs);
+
         // printf("---> Pause, appuyer sur <enter> pour continuer <---\n");
         // getchar();
-        rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+        if((rc = select(FD_SETSIZE, &readfs, NULL, NULL, NULL)) < 0) {
+            perror("select error");
+            exit(errno);
+        }
+
+        // On lit le datagramme sur le port reçu
+        if(FD_ISSET(DescE, &readfs)) {
+            currentDesc = DescE;
+        } else if(FD_ISSET(DescP, &readfs)) {
+            currentDesc = DescP;
+        } else if(FD_ISSET(DescS, &readfs)) {
+            currentDesc = DescS;
+        }
+        rc = ReceiveDatagram(currentDesc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+
         if (rc == -1) {
             perror("ReceiveDatagram");
         } else {
@@ -76,8 +97,8 @@ int main(int argc, char *argv[]) {
         }
         notreRequetePerso.Type = Reponse;
 
-        /* reponse avec psoc */
-        rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+        /* reponse avec psor */
+        rc = SendDatagram(currentDesc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("SendDatagram:");
         } else {
