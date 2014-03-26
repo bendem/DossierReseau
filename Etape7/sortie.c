@@ -13,10 +13,11 @@ le serveur fait de même
 #include "../siglib/sigs.h"
 
 
-int  RequeteSortieBDEF(char*, int);
+int  RequeteSortieBDEF(char*, int, int);
 char LocalReadChar();
 int  RecoverFichierTransactionBDEF(char*);
 void HandlerSigAlarm(int);
+int SortieParkingLocalBDEF(char*, int, int, int, int, int);
 
 int Desc;
 int IsSigAlarm = 0;
@@ -63,7 +64,7 @@ int main(int argc, char *argv[]) {
         // printf("\n%c\n", c);
         switch(c) {
             case '1':
-                res = RequeteSortieBDEF(NomFichier, GetTimeBDEF());
+                res = RequeteSortieBDEF(NomFichier, GetTimeBDEF(), 0);
                 if(res > 0) {
                     printf("Cya, votre ticket portait le numero %d.\n", res);
                 } else {
@@ -81,7 +82,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-int RequeteSortieBDEF(char* Fichier, int heure) {
+int RequeteSortieBDEF(char* Fichier, int heure, int reessai) {
     struct RequeteBDEF notreRequetePerso;
     int rc;
 
@@ -89,7 +90,7 @@ int RequeteSortieBDEF(char* Fichier, int heure) {
     notreRequetePerso.Action = SORTIE;
     notreRequetePerso.NumTransac = NumTransac;
     notreRequetePerso.Heure = heure;
-    notreRequetePerso.NumeroTicket = GetNumTicketBDEF();
+    notreRequetePerso.NumeroTicket = reessai ? reessai : GetNumTicketBDEF();
 
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
 
@@ -99,25 +100,25 @@ int RequeteSortieBDEF(char* Fichier, int heure) {
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    alarm(10);
 
     for(;;) {
+        alarm(10);
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             if (errno == EINTR && IsSigAlarm == 1) {
                 IsSigAlarm = 0;
-                return RequeteSortieBDEF(Fichier, heure);
+                return RequeteSortieBDEF(Fichier, heure, notreRequetePerso.NumeroTicket);
             }
 
             perror("ReceiveDatagram");
             return -1;
         } else {
-            if (NumTransac!=notreRequetePerso.NumTransac) {
+            if (NumTransac != notreRequetePerso.NumTransac) {
                 continue;
             }
             fprintf(stderr, "bytes:%d:%d\n", rc, notreRequetePerso.NumeroTicket);
             if (notreRequetePerso.NumeroTicket > 0) {
-                SortieParkingBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, notreRequetePerso.NumeroTicket);
+                SortieParkingLocalBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, notreRequetePerso.Heure, notreRequetePerso.NumeroTicket);
                 NumTransac++;
             }
             alarm(0);
@@ -151,4 +152,26 @@ int RecoverFichierTransactionBDEF(char* NomFichier) {
 
 void HandlerSigAlarm(int sig) {
     IsSigAlarm = 1;
+}
+
+int SortieParkingLocalBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
+    struct Transaction  UneTransaction;
+    FILE *fp;
+
+    fp = fopen(Nom, "a");
+    if(fp == NULL) {
+        perror("Erreur d'ouverture de fichier");
+        return -1;
+    }
+
+    // Sortie
+    UneTransaction.IP = IP;
+    UneTransaction.Port = Port;
+    UneTransaction.NumTransac = NumTransac;
+    UneTransaction.Heure = Heure;
+    UneTransaction.PlacesLibres = 0;
+    UneTransaction.UneAction = SORTIE;
+    UneTransaction.NumTicket = NumTicket;
+    fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
+    fclose(fp);
 }

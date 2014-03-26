@@ -40,8 +40,8 @@ int main(int argc, char *argv[]) {
     }
 
     for (;;) {
-        // printf("---> Pause, appuyer sur <enter> pour continuer <---\n");
-        // getchar();
+        printf("---> Pause, appuyer sur <enter> pour continuer <---\n");
+        getchar();
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("ReceiveDatagram");
@@ -51,10 +51,11 @@ int main(int argc, char *argv[]) {
 
         if(notreRequetePerso.Action == PAIEMENT && notreRequetePerso.Type == Question) {
             notreRequetePerso.Heure = processDatagramBDEF(notreRequetePerso, psor);
+            notreRequetePerso.Type = Question;
         } else {
             notreRequetePerso.NumeroTicket = processDatagramBDEF(notreRequetePerso, psor);
+            notreRequetePerso.Type = Reponse;
         }
-        notreRequetePerso.Type = Reponse;
 
         /* reponse avec psoc */
         rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
