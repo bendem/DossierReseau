@@ -13,7 +13,7 @@ le serveur fait de même
 #include "../siglib/sigs.h"
 
 
-int   RequeteCoutBDEF(char*, int);
+int   RequeteCoutBDEF(char*, int, int);
 int   RequetePaiementBDEF(char*, int, int);
 char  LocalReadChar();
 int   RecoverFichierTransactionBDEF(char*);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
         c = LocalReadChar();
         switch(c) {
             case '1':
-                res = RequeteCoutBDEF(NomFichier, GetTimeBDEF());
+                res = RequeteCoutBDEF(NomFichier, GetTimeBDEF(), 0);
                 if(res > 0) {
                     printf("Vous avez bien paye le ticket `%d'.\n", res);
                 } else {
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-int RequeteCoutBDEF(char* Fichier, int heure) {
+int RequeteCoutBDEF(char* Fichier, int heure, int reessai) {
     struct RequeteBDEF req;
     int rc;
     float cout;
@@ -108,8 +108,7 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
     req.Type = Question;
     req.Action = PAIEMENT;
     req.NumTransac = NumTransac;
-
-    req.NumeroTicket = GetNumTicketBDEF();
+    req.NumeroTicket = reessai ? reessai : GetNumTicketBDEF();
 
     rc = SendDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psoc);
     if (rc == -1) {
@@ -118,12 +117,12 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    alarm(30);
+    alarm(15);
     rc = ReceiveDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psor);
     if (rc == -1) {
         if (errno == EINTR && IsSigAlarm == 1) {
             IsSigAlarm = 0;
-            return RequeteCoutBDEF(Fichier, heure);
+            return RequeteCoutBDEF(Fichier, heure, req.NumeroTicket);
         }
 
         perror("ReceiveDatagram");
