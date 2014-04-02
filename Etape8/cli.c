@@ -85,6 +85,7 @@ int main(int argc, char *argv[]) {
 int RequeteReservationBDEF(char* Fichier, int heure) {
     struct RequeteBDEF notreRequetePerso;
     int rc;
+    char c;
 
     notreRequetePerso.Type = Question;
     notreRequetePerso.Action = RESERVATION;
@@ -92,6 +93,12 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
     notreRequetePerso.Heure = heure;
     notreRequetePerso.CRC = 0;
     notreRequetePerso.CRC = cksum(&notreRequetePerso, sizeof(notreRequetePerso));
+    printf("Voulez-vous changer le CRC avant l'envoi? : \n");
+    c = getchar();
+    if (c != '\n')
+    {
+        notreRequetePerso.CRC++;
+    }
     printf("CRC: %u, cksum: %d\n", notreRequetePerso.CRC, cksum(&notreRequetePerso, sizeof(notreRequetePerso)));
 
     rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psoc);
@@ -102,10 +109,14 @@ int RequeteReservationBDEF(char* Fichier, int heure) {
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    alarm(10);
+    alarm(20);
 
     for(;;) {
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
+        if(cksum(&notreRequetePerso, sizeof(notreRequetePerso)) != 0 && notreRequetePerso.Action == RESERVATION) {
+            printf("Mauvais checksum! On renvoie la requete...\n");
+            return RequeteReservationBDEF(Fichier, heure);
+        }
         if (rc == -1) {
             if (errno == EINTR && IsSigAlarm == 1) {
                 IsSigAlarm = 0;
