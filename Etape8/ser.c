@@ -21,6 +21,7 @@ int processDatagramBDEF(struct RequeteBDEF, struct sockaddr_in);
 
 int main(int argc, char *argv[]) {
     int rc;
+    char c;
     int Desc;
     struct sockaddr_in psoo; /* o = origine */
     struct sockaddr_in psor; /* r = remote */
@@ -41,8 +42,8 @@ int main(int argc, char *argv[]) {
     }
 
     for (;;) {
-        // printf("---> Pause, appuyer sur <enter> pour continuer <---\n");
-        // getchar();
+        printf("---> Pause, appuyer sur <enter> pour continuer <---\n");
+        getchar();
         rc = ReceiveDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("ReceiveDatagram");
@@ -63,6 +64,15 @@ int main(int argc, char *argv[]) {
         notreRequetePerso.Type = Reponse;
 
         /* reponse avec psoc */
+        notreRequetePerso.CRC = 0;
+    	notreRequetePerso.CRC = cksum(&notreRequetePerso, sizeof(notreRequetePerso));
+    	printf("Voulez-vous changer le CRC avant l'envoi? : \n");
+    	c = getchar();
+	    if (c != '\n')
+	    {
+	        notreRequetePerso.CRC++;
+	    }
+    	printf("CRC: %u, cksum: %d\n", notreRequetePerso.CRC, cksum(&notreRequetePerso, sizeof(notreRequetePerso)));
         rc = SendDatagram(Desc, &notreRequetePerso, sizeof(struct RequeteBDEF), &psor);
         if (rc == -1) {
             perror("SendDatagram:");
