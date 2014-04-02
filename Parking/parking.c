@@ -146,7 +146,7 @@ int PaiementTicketBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, i
 
     // En cas d'erreur lors de la recherche
     if(offset < 1) {
-        return offset; // TODO FIXME plz
+        return offset;
     }
 
     // Si tout est trop cool
@@ -271,7 +271,6 @@ int existsTransactionBDEF(char *nomFichier, int ip, int port, int numTransac, en
     fseek(fp, -sizeof(struct Transaction), SEEK_END);
     while(ftell(fp) > sizeof(struct Transaction)) {
         fread(&transac, sizeof(struct Transaction), 1, fp);
-        printf("oy---\n");
         if(transac.IP == ip && transac.Port == port && transac.UneAction == type) {
             if(transac.NumTransac == numTransac) {
                 return transac.NumTicket;

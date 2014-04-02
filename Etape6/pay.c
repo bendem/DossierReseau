@@ -13,13 +13,14 @@ le serveur fait de même
 #include "../siglib/sigs.h"
 
 
-int   RequeteCoutBDEF(char*, int);
+int   RequeteCoutBDEF(char*, int, int);
 int   RequetePaiementBDEF(char*, int, int);
 char  LocalReadChar();
 int   RecoverFichierTransactionBDEF(char*);
 void  HandlerSigAlarm(int);
 float CalculCoutBDEF(int, int);
 int   TimeToMinutesBDEF(int);
+int   PaiementTicketLocalBDEF(char*, int, int, int, int, int);
 
 
 int Desc;
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
         c = LocalReadChar();
         switch(c) {
             case '1':
-                res = RequeteCoutBDEF(NomFichier, GetTimeBDEF());
+                res = RequeteCoutBDEF(NomFichier, GetTimeBDEF(), 0);
                 if(res > 0) {
                     printf("Vous avez bien paye le ticket `%d'.\n", res);
                 } else {
@@ -98,7 +99,7 @@ int main(int argc, char *argv[]) {
 
 }
 
-int RequeteCoutBDEF(char* Fichier, int heure) {
+int RequeteCoutBDEF(char* Fichier, int heure, int reessai) {
     struct RequeteBDEF req;
     int rc;
     float cout;
@@ -107,8 +108,7 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
     req.Type = Question;
     req.Action = PAIEMENT;
     req.NumTransac = NumTransac;
-
-    req.NumeroTicket = GetNumTicketBDEF();
+    req.NumeroTicket = reessai ? reessai : GetNumTicketBDEF();
 
     rc = SendDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psoc);
     if (rc == -1) {
@@ -117,31 +117,37 @@ int RequeteCoutBDEF(char* Fichier, int heure) {
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    alarm(30);
-    rc = ReceiveDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psor);
-    if (rc == -1) {
-        if (errno == EINTR && IsSigAlarm == 1) {
-            IsSigAlarm = 0;
-            return RequeteCoutBDEF(Fichier, heure);
-        }
-
-        perror("ReceiveDatagram");
-        return -1;
-    } else {
-        alarm(0);
-        fprintf(stderr, "bytes:%d:%dh\n", rc, req.Heure);
-        if (req.Heure > 0) {
-            cout = CalculCoutBDEF(req.Heure, heure);
-            printf("Confirmez-vous le paiement de %.2f ?\n", cout);
-            c = LocalReadChar();
-            if (c == 'O' || c == 'o') {
-                return RequetePaiementBDEF(Fichier, req.NumeroTicket, heure);
-            } else {
-                return -3;
+    for(;;) {
+        alarm(15);
+        rc = ReceiveDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psor);
+        if (rc == -1) {
+            if (errno == EINTR && IsSigAlarm == 1) {
+                IsSigAlarm = 0;
+                return RequeteCoutBDEF(Fichier, heure, req.NumeroTicket);
             }
+
+            perror("ReceiveDatagram");
+            return -1;
+        } else {
+            if (NumTransac != req.NumTransac || req.Type != Question) {
+                printf("Reponse ignoree...\n");
+                continue;
+            }
+            alarm(0);
+            fprintf(stderr, "bytes:%d:%dh\n", rc, req.Heure);
+            if (req.Heure > 0) {
+                cout = CalculCoutBDEF(req.Heure, heure);
+                printf("Confirmez-vous le paiement de %.2f ?\n", cout);
+                c = LocalReadChar();
+                if (c == 'O' || c == 'o') {
+                    return RequetePaiementBDEF(Fichier, req.NumeroTicket, heure);
+                } else {
+                    return -3;
+                }
+            }
+            // En cas d'erreur, on retourne le code en question
+            return req.Heure;
         }
-        // En cas d'erreur, on retourne le code en question
-        return req.Heure;
     }
 }
 
@@ -162,27 +168,29 @@ int RequetePaiementBDEF(char *Fichier, int NumTicket, int Heure) {
         fprintf(stderr, "Envoi de %d bytes\n", rc);
     }
 
-    alarm(30);
-
-    rc = ReceiveDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psor);
-    if (rc == -1) {
-        if (errno == EINTR && IsSigAlarm == 1) {
-            IsSigAlarm = 0;
-            return RequetePaiementBDEF(Fichier, NumTicket, Heure);
+    for(;;) {
+        alarm(15);
+        rc = ReceiveDatagram(Desc, &req, sizeof(struct RequeteBDEF), &psor);
+        if (rc == -1) {
+            if (errno == EINTR && IsSigAlarm == 1) {
+                IsSigAlarm = 0;
+                return RequetePaiementBDEF(Fichier, NumTicket, Heure);
+            }
+            perror("ReceiveDatagram");
+            return -1;
         }
-        perror("ReceiveDatagram");
-        return -1;
-    }
+        if (NumTransac != req.NumTransac || req.Type != Reponse) {
+            continue;
+        }
 
-    alarm(0);
-    fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
-    if (req.NumeroTicket > 0) {
-        // Ceci ne marche pas vu que la fonction cherche pour une transaction de type RESERVATION
-        // et qu'il n'y en a pas dans ce fichier si...
-        PaiementTicketBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
-        ++NumTransac;
+        alarm(0);
+        fprintf(stderr, "bytes:%d:%d\n", rc, req.NumeroTicket);
+        if (req.NumeroTicket > 0) {
+            PaiementTicketLocalBDEF(Fichier, GetIP(&psoo), GetPort(&psoo), NumTransac, req.Heure, req.NumeroTicket);
+            ++NumTransac;
+        }
+        return req.NumeroTicket;
     }
-    return req.NumeroTicket;
 
 }
 
@@ -220,4 +228,26 @@ int TimeToMinutesBDEF(int t) {
     int hours = t / 100;
     int minutes = t - hours * 100;
     return hours * 60 + minutes;
+}
+
+
+int PaiementTicketLocalBDEF(char *Nom, int IP, int Port, int NumTransac, int Heure, int NumTicket) {
+    FILE *fp;
+    fp = fopen(Nom, "a");
+    if(fp == NULL) {
+        perror("Erreur d'ouverture de fichier");
+        return -1;
+    }
+    // Paiement
+    struct Transaction  UneTransaction;
+    UneTransaction.IP = IP;
+    UneTransaction.Port = Port;
+    UneTransaction.NumTransac = NumTransac;
+    UneTransaction.Heure = Heure;
+    UneTransaction.PlacesLibres = 0;
+    UneTransaction.UneAction = PAIEMENT;
+    UneTransaction.NumTicket = NumTicket;
+    fwrite(&UneTransaction, sizeof(struct Transaction), 1, fp);
+    fclose(fp);
+    return 0;
 }
